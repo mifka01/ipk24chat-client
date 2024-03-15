@@ -91,9 +91,10 @@ Temporary Items
 
 # ---> Clang compilation database
 compile_commands.json
+.cache/
 
 # ---> Build
 /build
-/bin
+ipk24chat-client
 *.zip
 *.tar
