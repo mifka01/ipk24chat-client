@@ -6,7 +6,12 @@ Argument::Argument(const std::string& name,
                    const Type type,
                    const std::string& help,
                    const int nargs)
-    : name(name), type(type), help(help), nargs(nargs), isRequired(true) {
+    : name(name),
+      type(type),
+      help(help),
+      nargs(nargs),
+      isRequired(true),
+      isPositional(true) {
   if (name.empty()) {
     throw std::invalid_argument("Name cannot be empty");
   }
@@ -28,7 +33,8 @@ Argument::Argument(const std::string& name,
       help(help),
       defaultValue(defaultValue),
       nargs(nargs),
-      isRequired(required) {
+      isRequired(required),
+      isPositional(false) {
   if (name.empty()) {
     throw std::invalid_argument("Name cannot be empty");
   }
@@ -51,5 +57,7 @@ std::string Argument::getShortcut() const {
 std::string Argument::getHelp() const {
   return help;
 }
-
+Type Argument::getType() const {
+  return type;
+}
 }  // namespace ArgumentParser

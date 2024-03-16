@@ -29,8 +29,10 @@ class Argument {
            bool required = false);
 
   bool isRequired;
+  bool isPositional;
   std::string getName() const;
   std::string getShortcut() const;
+  Type getType() const;
   std::string getHelp() const;
 };
 }  // namespace ArgumentParser
