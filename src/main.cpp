@@ -1,11 +1,12 @@
 #include <iostream>
-#include "ArgumentParser/Parser.hpp"
+#include "arguments.hpp"
 
 int main(int argc, char* argv[]) {
-  ArgumentParser::Parser parser;
-  parser.addArgument("--port", ArgumentParser::Type::UINT16, "-p",
-                     "Port number", "4567");
+  std::unordered_map<std::string, std::string> args =
+      parse_arguments(argc, argv);
 
-  parser.parse(argc, argv);
+  for (auto& arg : args) {
+    std::cout << arg.first << " " << arg.second << std::endl;
+  }
   return 0;
 }
