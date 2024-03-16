@@ -9,8 +9,8 @@ namespace ArgumentParser {
 class Parser {
  public:
   void addArgument(const std::string& name,
+                   const std::string& shortcut,
                    const Type type,
-                   const std::string& shortcut = "",
                    const std::string& help = "",
                    const std::string& defaultValue = "",
                    const int nargs = 1,
@@ -21,7 +21,7 @@ class Parser {
                    const std::string& help = "",
                    const int nargs = 1);
 
-  void parse(int argc, char* argv[]);
+  std::unordered_map<std::string, std::string> parse(int argc, char* argv[]);
 
  private:
   Validator validator;
