@@ -28,34 +28,40 @@ class Parser {
                   std::unordered_map<std::string, std::string>& parsedArgs);
 
  public:
+  std::string programName;
+  Parser(std::string programName);
   // FLAG
   void addArgument(const std::string& name,
                    const std::string& shortcut,
                    const std::string& help = "",
-                   bool required = false);
+                   const bool& required = false);
 
   // POSITIONAL
   void addArgument(const std::string& name,
-                   const Type type,
+                   const Type& type,
                    const std::string& help = "",
-                   const int nargs = 1);
+                   const int& nargs = 1);
 
   void addArgument(const std::string& name,
-                   const Type type,
+                   const Type& type,
                    const std::string& help = "",
                    const std::vector<std::string>& choices = {},
-                   const int nargs = 1);
+                   const int& nargs = 1);
 
   // OPTION
-  void addArgument(const std::string name,
-                   const std::string shortcut,
-                   const Type type,
-                   const std::string help = "",
-                   bool required = false,
+  void addArgument(const std::string& name,
+                   const std::string& shortcut,
+                   const Type& type,
+                   const std::string& help = "",
+                   const bool& required = false,
                    const std::string& defaultValue = "",
-                   const std::vector<std::string> choices = {},
-                   const int nargs = 1);
+                   const std::vector<std::string>& choices = {},
+                   const int& nargs = 1);
 
   std::unordered_map<std::string, std::string> parse(int argc, char* argv[]);
+  void validateChoices(const Type& type,
+                       const std::vector<std::string>& choices);
+  void printHelp();
+  void printUsage();
 };
 }  // namespace ArgumentParser

@@ -37,7 +37,7 @@ Validator::Validator() {
   };
 }
 
-bool Validator::validateType(Type type, std::string value) {
+bool Validator::validateType(const Type& type, const std::string& value) {
   auto validator = validators.find(type);
 
   if (validator != validators.end()) {
@@ -47,14 +47,22 @@ bool Validator::validateType(Type type, std::string value) {
   return false;
 }
 
-bool Validator::validateChoices(std::string value,
-                                std::vector<std::string> choices) {
+bool Validator::validateChoices(const std::string& value,
+                                const std::vector<std::string>& choices) {
   if (choices.empty()) {
     return true;
   }
 
-  transform(value.begin(), value.end(), value.begin(), ::toupper);
-  return std::find(choices.begin(), choices.end(), value) != choices.end();
+  std::string upperValue = value;
+
+  transform(upperValue.begin(), upperValue.end(), upperValue.begin(),
+            ::toupper);
+  return std::find(choices.begin(), choices.end(), upperValue) != choices.end();
+}
+
+bool Validator::validate(const Argument& arg, const std::string& value) {
+  return validateType(arg.getType(), value) &&
+         validateChoices(value, arg.getChoices());
 }
 
 }  // namespace ArgumentParser

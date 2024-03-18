@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace ArgumentParser {
 
@@ -13,5 +14,9 @@ enum class Type {
   STRING,
   BOOL,
   HOST,
+  HELP,
+
 };
+std::string toString(Type type);
+
 }  // namespace ArgumentParser

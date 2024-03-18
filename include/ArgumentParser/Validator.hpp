@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <unordered_map>
+#include "Argument.hpp"
 #include "Type.hpp"
 
 namespace ArgumentParser {
@@ -10,8 +11,10 @@ class Validator {
 
  public:
   Validator();
-  bool validateType(Type type, std::string value);
-  bool validateChoices(std::string value, std::vector<std::string> choices);
+  bool validateType(const Type& type, const std::string& value);
+  bool validateChoices(const std::string& value,
+                       const std::vector<std::string>& choices);
+  bool validate(const Argument& arg, const std::string& value);
 };
 
 }  // namespace ArgumentParser
