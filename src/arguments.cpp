@@ -2,15 +2,16 @@
 
 std::unordered_map<std::string, std::string> parse_arguments(int argc,
                                                              char* argv[]) {
-  ArgumentParser::Parser parser;
+  ArgumentParser::Parser parser{"ipk24chat-client"};
 
   parser.addArgument("--transport", "-t", ArgumentParser::Type::STRING,
                      "Transport protocol", true, "", {"UDP", "TCP"});
 
   parser.addArgument("--server", "-s", ArgumentParser::Type::HOST,
-                     "Transport protocol", true);
+                     "Server IP or hostname", true);
+
   parser.addArgument("--port", "-p", ArgumentParser::Type::UINT16,
-                     "Port number", false, "4567");
+                     "Server port", false, "4567");
 
   parser.addArgument("--udptimeout", "-d", ArgumentParser::Type::UINT16,
                      "UDP confirmation timeout", false, "250");
