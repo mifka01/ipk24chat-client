@@ -1,3 +1,8 @@
+/**
+ * @file src/arguments.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include "ArgumentParser/Parser.hpp"
 
 std::unordered_map<std::string, std::string> parse_arguments(int argc,
