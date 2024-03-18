@@ -10,7 +10,8 @@ class Validator {
 
  public:
   Validator();
-  bool validate(Type type, std::string value);
+  bool validateType(Type type, std::string value);
+  bool validateChoices(std::string value, std::vector<std::string> choices);
 };
 
 }  // namespace ArgumentParser

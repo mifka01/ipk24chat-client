@@ -1,4 +1,5 @@
 #include "ArgumentParser/Validator.hpp"
+#include <regex>
 
 namespace ArgumentParser {
 
@@ -24,9 +25,19 @@ Validator::Validator() {
       return false;
     }
   };
+
+  validators[Type::STRING] = [](std::string value) { return !value.empty(); };
+
+  validators[Type::HOST] = [](std::string value) {
+    std::regex hostPattern(
+        "^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-"
+        "Z0-9])(\\.([a-zA-Z0-"
+        "9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9]))*$");
+    return std::regex_match(value, hostPattern);
+  };
 }
 
-bool Validator::validate(Type type, std::string value) {
+bool Validator::validateType(Type type, std::string value) {
   auto validator = validators.find(type);
 
   if (validator != validators.end()) {
@@ -34,6 +45,16 @@ bool Validator::validate(Type type, std::string value) {
   }
 
   return false;
+}
+
+bool Validator::validateChoices(std::string value,
+                                std::vector<std::string> choices) {
+  if (choices.empty()) {
+    return true;
+  }
+
+  transform(value.begin(), value.end(), value.begin(), ::toupper);
+  return std::find(choices.begin(), choices.end(), value) != choices.end();
 }
 
 }  // namespace ArgumentParser
