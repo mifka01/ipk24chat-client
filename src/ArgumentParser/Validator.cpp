@@ -1,3 +1,8 @@
+/**
+ * @file src/ArgumentParser/Validator.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include "ArgumentParser/Validator.hpp"
 #include <regex>
 

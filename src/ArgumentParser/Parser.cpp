@@ -1,3 +1,8 @@
+/**
+ * @file src/ArgumentParser/Parser.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include "ArgumentParser/Parser.hpp"
 #include <iomanip>
 #include <iostream>

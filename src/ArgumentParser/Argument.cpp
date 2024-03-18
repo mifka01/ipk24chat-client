@@ -1,3 +1,8 @@
+/**
+ * @file src/ArgumentParser/Argument.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include "ArgumentParser/Argument.hpp"
 
 namespace ArgumentParser {
