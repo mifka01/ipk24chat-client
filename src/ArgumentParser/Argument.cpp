@@ -70,6 +70,15 @@ Argument::Argument(const std::string& name,
 std::string Argument::getName() const {
   return name;
 }
+
+std::string Argument::getOutputName() const {
+  if (name.substr(0, 2) == "--") {
+    return name.substr(2);
+  }
+  std::string lower = name;
+  std::transform(name.begin(), name.end(), lower.begin(), ::tolower);
+  return lower;
+}
 std::string Argument::getShortcut() const {
   return shortcut;
 }

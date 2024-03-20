@@ -37,7 +37,7 @@ class Parser {
    * @return std::vector<std::string>::const_iterator The iterator to the
    * argument.
    */
-  std::vector<std::string>::const_iterator findArg(
+  inline std::vector<std::string>::const_iterator findArg(
       const std::vector<std::string>& args,
       const std::string& name,
       const std::string& shortcut);
@@ -162,8 +162,8 @@ class Parser {
    * @param type The type of the argument.
    * @param choices The list of choices for the argument.
    */
-  void validateChoices(const Type& type,
-                       const std::vector<std::string>& choices);
+  inline void validateChoices(const Type& type,
+                              const std::vector<std::string>& choices);
 
   /**
    * @brief Prints the help message.

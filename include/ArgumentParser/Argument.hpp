@@ -89,6 +89,13 @@ class Argument {
   std::string getName() const;
 
   /**
+   * @brief Gets the output name of the argument.
+   *
+   * @return The output name of the argument.
+   */
+  std::string getOutputName() const;
+
+  /**
    * @brief Gets the shortcut of the argument.
    *
    * @return The shortcut of the argument.

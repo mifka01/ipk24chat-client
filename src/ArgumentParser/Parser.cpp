@@ -27,7 +27,7 @@ std::unordered_map<std::string, std::string> Parser::parse(int argc,
   return parsedArgs;
 }
 
-std::vector<std::string>::const_iterator Parser::findArg(
+inline std::vector<std::string>::const_iterator Parser::findArg(
     const std::vector<std::string>& args,
     const std::string& name,
     const std::string& shortcut) {
@@ -47,7 +47,7 @@ void Parser::parsePositional(
     const std::string& argValue = args[i];
 
     if (validator.validate(arg, argValue)) {
-      parsedArgs[arg.getName()] = argValue;
+      parsedArgs[arg.getOutputName()] = argValue;
     } else {
       printUsage();
       throw std::invalid_argument(
@@ -75,14 +75,14 @@ void Parser::parseOptions(
                                       arg.getDefaultValue() +
                                       "' for option: " + arg.getName());
         }
-        parsedArgs[arg.getName()] = arg.getDefaultValue();
+        parsedArgs[arg.getOutputName()] = arg.getDefaultValue();
       }
       continue;
     }
 
     auto nextArg = it + 1;
     if (nextArg != args.end() && validator.validate(arg, *nextArg)) {
-      parsedArgs[arg.getName()] = *nextArg;
+      parsedArgs[arg.getOutputName()] = *nextArg;
     } else {
       printUsage();
       throw std::invalid_argument("Invalid value: '" + *nextArg +
@@ -101,7 +101,7 @@ void Parser::parseFlags(
       exit(0);
     }
     if (it != args.end()) {
-      parsedArgs[arg.getName()] = "true";
+      parsedArgs[arg.getOutputName()] = "true";
       continue;
     }
     if (arg.isRequired) {
@@ -151,8 +151,8 @@ void Parser::addArgument(const std::string& name,
                              nargs, required));
 }
 
-void Parser::validateChoices(const Type& type,
-                             const std::vector<std::string>& choices) {
+inline void Parser::validateChoices(const Type& type,
+                                    const std::vector<std::string>& choices) {
   for (const std::string& s : choices) {
     if (!validator.validateType(type, s)) {
       throw std::invalid_argument("Invalid type of choice: " + s);
