@@ -81,7 +81,7 @@ void Parser::parseOptions(
     }
 
     auto nextArg = it + 1;
-    if (nextArg != args.end() && validator.validate(arg, *nextArg)) {
+    if (validator.validate(arg, *nextArg)) {
       parsedArgs[arg.getOutputName()] = *nextArg;
     } else {
       printUsage();
@@ -108,6 +108,7 @@ void Parser::parseFlags(
       printUsage();
       throw std::invalid_argument("Missing required flag: " + arg.getName());
     }
+    parsedArgs[arg.getOutputName()] = "false";
   }
 }
 
