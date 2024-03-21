@@ -33,6 +33,7 @@ class Validator {
 
   /**
    * @brief Validates the given value against the specified type.
+   *
    * @param type The type to validate against.
    * @param value The value to be validated.
    * @return True if the value is valid for the given type, false otherwise.
@@ -41,6 +42,7 @@ class Validator {
 
   /**
    * @brief Validates the given value against the specified choices.
+   *
    * @param value The value to be validated.
    * @param choices The list of valid choices.
    * @return True if the value is one of the valid choices, false otherwise.
@@ -51,6 +53,7 @@ class Validator {
   /**
    * @brief Validates the given value against the specified argument type and
    * choices.
+   *
    * @param arg The argument to be validated against.
    * @param value The value to be validated.
    * @return True if the value is valid for the argument, false otherwise.
