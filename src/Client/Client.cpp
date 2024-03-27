@@ -1,4 +1,4 @@
-#include "Client/Client.hpp"
+#include <Client/Client.hpp>
 #include <Client/SocketPoller.hpp>
 #include <iostream>
 
@@ -73,8 +73,14 @@ void Client::run() {
     if (poller.hasEvent(0, POLLIN)) {
       std::string message;
       std::getline(std::cin, message);
-      send(message);
-      std::cerr << "Sent: " << message << std::endl;
+
+      for (const auto& command : commandRegistry.commands) {
+        if (command.second->match(message)) {
+          message = command.second->generateMessage(protocol, message);
+          send(message);
+          break;
+        }
+      }
     }
 
     if (poller.hasEvent(1, POLLIN)) {

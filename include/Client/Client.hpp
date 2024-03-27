@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <Command/CommandRegistry.hpp>
 #include <Protocol/Type.hpp>
 #include <string>
 
@@ -30,7 +31,7 @@ class Client {
   ~Client();
 
   void run();
-  void auth(const std::string& username, const std::string& password);
+  Command::CommandRegistry commandRegistry;
 };
 
 }  // namespace Client
