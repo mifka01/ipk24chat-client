@@ -7,7 +7,7 @@ class HELPCommand : public Command {
  public:
   HELPCommand();
 
-  void execute(Protocol::Protocol& protocol,
+  void execute(std::shared_ptr<Protocol::Protocol> protocol,
                const std::string& message,
                Client::Session& session) override;
 };

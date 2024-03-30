@@ -29,7 +29,7 @@ class Command {
 
   const std::string& getPrefix() const;
 
-  virtual void execute(Protocol::Protocol& protocol,
+  virtual void execute(std::shared_ptr<Protocol::Protocol> protocol,
                        const std::string& message,
                        Client::Session& session) = 0;
   virtual ~Command() = default;

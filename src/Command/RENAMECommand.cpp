@@ -11,7 +11,7 @@ RENAMECommand::RENAMECommand()
               }) {}
 
 void RENAMECommand::execute(__attribute__((unused))
-                            Protocol::Protocol& protocol,
+                            std::shared_ptr<Protocol::Protocol> protocol,
                             const std::string& message,
                             Client::Session& session) {
   std::vector<std::string> tokens = totokens(message);

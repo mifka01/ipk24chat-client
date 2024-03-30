@@ -6,7 +6,8 @@ namespace Command {
 
 HELPCommand::HELPCommand() : Command("help", "/", {}) {}
 
-void HELPCommand::execute(__attribute__((unused)) Protocol::Protocol& protocol,
+void HELPCommand::execute(__attribute__((unused))
+                          std::shared_ptr<Protocol::Protocol> protocol,
                           __attribute__((unused)) const std::string& message,
                           __attribute__((unused)) Client::Session& session) {
   std::cout << "Commands:" << std::endl;

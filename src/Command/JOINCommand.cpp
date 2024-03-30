@@ -11,7 +11,7 @@ JOINCommand::JOINCommand()
                   Parameter("ChannelID", "[a-zA-Z0-9\\-]", 20),
               }) {}
 
-void JOINCommand::execute(Protocol::Protocol& protocol,
+void JOINCommand::execute(std::shared_ptr<Protocol::Protocol> protocol,
                           const std::string& message,
                           Client::Session& session) {
   if (session.state != Client::State::OPEN) {
@@ -20,8 +20,8 @@ void JOINCommand::execute(Protocol::Protocol& protocol,
   }
   std::vector<std::string> tokens = totokens(message);
   tokens.erase(tokens.begin());
-  protocol.send(session.socket,
-                protocol.toMessage(Message::Type::JOIN, tokens, session));
+  protocol->send(session.socket,
+                protocol->toMessage(Message::Type::JOIN, tokens));
 }
 
 }  // namespace Command

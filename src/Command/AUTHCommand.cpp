@@ -13,7 +13,7 @@ AUTHCommand::AUTHCommand()
                   Parameter("DisplayName", "[\\x21-\\x7E]", 20),
               }) {}
 
-void AUTHCommand::execute(Protocol::Protocol& protocol,
+void AUTHCommand::execute(std::shared_ptr<Protocol::Protocol> protocol,
                           const std::string& message,
                           Client::Session& session) {
   if (session.state == Client::State::OPEN) {
@@ -25,8 +25,8 @@ void AUTHCommand::execute(Protocol::Protocol& protocol,
   session.state = Client::State::AUTH;
   tokens.erase(tokens.begin());
 
-  protocol.send(session.socket,
-                protocol.toMessage(Message::Type::AUTH, tokens, session));
+  protocol->send(session.socket,
+                 protocol->toMessage(Message::Type::AUTH, tokens));
 }
 
 }  // namespace Command
