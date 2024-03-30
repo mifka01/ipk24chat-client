@@ -17,10 +17,13 @@ class TCP : public Protocol {
 
   const std::map<Message::Type, std::regex> regexes = {
       {Message::Type::MSG,
-       std::regex("MSG FROM " + username + " IS " + content + clrf)},
-      {Message::Type::REPLY, std::regex("REPLY (OK|NOK) IS " + content + clrf)},
+       std::regex("MSG FROM " + Message::Pattern::username + " IS " +
+                  Message::Pattern::content + clrf)},
+      {Message::Type::REPLY,
+       std::regex("REPLY (OK|NOK) IS " + Message::Pattern::content + clrf)},
       {Message::Type::ERR,
-       std::regex("ERR FROM " + displayName + " IS " + content + clrf)},
+       std::regex("ERR FROM " + Message::Pattern::displayName + " IS " +
+                  Message::Pattern::content + clrf)},
       {Message::Type::BYE, std::regex("BYE" + clrf)},
   };
 
