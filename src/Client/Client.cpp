@@ -6,14 +6,15 @@ namespace Client {
 
 Client::Client(const std::string& host,
                const int& port,
-               Protocol::Protocol& protocol)
-    : host(host), port(port), protocol(protocol) {
+               const std::string& protocolName)
+    : host(host),
+      port(port),
+      protocol(Protocol::Protocol::fromString(protocolName, session)) {
   visitor = std::make_unique<Message::MessageVisitor>(*this);
-  addrinfo* addr = getAddress();
+  address = getAddress();
 
-  session.socket = ::socket(addr->ai_family, addr->ai_socktype, 0);
+  session.socket = ::socket(address->ai_family, address->ai_socktype, 0);
   if (session.socket <= 0) {
-    freeaddrinfo(addr);
     throw std::runtime_error("Failed to create socket");
   }
 
@@ -21,14 +22,14 @@ Client::Client(const std::string& host,
     freeaddrinfo(addr);
     throw std::runtime_error("Failed to connect to server");
   }
-  freeaddrinfo(addr);
+  session.serverAddr = address->ai_addr;
 }
 
 addrinfo* Client::getAddress() {
   addrinfo hints, *addrinfo;
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_UNSPEC;
-  hints.ai_socktype = protocol.socketType();
+  hints.ai_socktype = protocol->socketType();
 
   if (getaddrinfo(host.c_str(), std::to_string(port).c_str(), &hints,
                   &addrinfo) != 0) {
@@ -80,21 +81,21 @@ void Client::processInput() {
 
   if (state == State::START) {
     if (message == "BYE") {
-      protocol.send(session.socket,
-                    protocol.toMessage(Message::Type::BYE, {}, session));
+      protocol->send(session.socket,
+                     protocol->toMessage(Message::Type::BYE, {}));
       state = State::END;
       return;
     }
   }
   if (state == State::OPEN) {
     if (message == "BYE") {
-      protocol.send(session.socket,
-                    protocol.toMessage(Message::Type::BYE, {}, session));
+      protocol->send(session.socket,
+                     protocol->toMessage(Message::Type::BYE, {}));
       state = State::END;
       return;
     }
-    protocol.send(session.socket,
-                  protocol.toMessage(Message::Type::MSG, {message}, session));
+    protocol->send(session.socket,
+                   protocol->toMessage(Message::Type::MSG, {message}));
     return;
   }
 
@@ -102,7 +103,7 @@ void Client::processInput() {
 }
 
 void Client::processReply() {
-  std::unique_ptr<Message::Message> reply = protocol.receive(session.socket);
+  std::unique_ptr<Message::Message> reply = protocol->receive(session.socket);
   reply->accept(*visitor);
 }
 
@@ -130,5 +131,6 @@ void Client::run() {
 
 Client::~Client() {
   close();
+  freeaddrinfo(address);
 }
 }  // namespace Client

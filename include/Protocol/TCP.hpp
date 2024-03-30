@@ -2,17 +2,11 @@
 #include <map>
 #include <regex>
 #include <string>
-#include "Client/Session.hpp"
 #include "Message/Message.hpp"
 #include "Protocol.hpp"
 
 namespace Protocol {
 class TCP : public Protocol {
-  const std::string username = "[a-zA-Z0-9\\-]{1,20}";
-  const std::string secret = "[a-zA-Z0-9\\-]{1,128}";
-  const std::string displayName = "[\\x21-\\x7E]{1,20}";
-  const std::string content = "[\\x20-\\x7E]{1,1400}";
-  const std::string channelID = "[a-zA-Z0-9\\-]{1,20}";
   const std::string clrf = "\\r\\n";
 
   const std::map<Message::Type, std::regex> regexes = {
@@ -28,13 +22,9 @@ class TCP : public Protocol {
   };
 
  public:
-  int socketType() override;
-  std::string toString() override;
-
-  std::unique_ptr<Message::Message> toMessage(
-      const Message::Type message,
-      const std::vector<std::string>& parameters,
-      Client::Session& session) override;
+  TCP(Client::Session& session) : Protocol(session){};
+  inline int socketType() override { return SOCK_STREAM; }
+  inline std::string toString() override { return "TCP"; }
 
   void send(int socket, std::unique_ptr<Message::Message> message) override;
   std::unique_ptr<Message::Message> receive(int socket) override;

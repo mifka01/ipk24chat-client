@@ -34,9 +34,9 @@ void MessageVisitor::visit(__attribute__((unused)) ByeMessage& bye) {
 void MessageVisitor::visit(ErrMessage& err) {
   Client::State state = client.getState();
   if (state == Client::State::AUTH || state == Client::State::OPEN) {
-    client.protocol.send(
+    client.protocol->send(
         client.session.socket,
-        client.protocol.toMessage(Type::BYE, {}, client.session));
+        client.protocol->toMessage(Type::BYE, {}));
     client.setState(Client::State::END);
   }
   std::cerr << "ERR FROM " << err.displayName << ": " << err.content << "\n";
