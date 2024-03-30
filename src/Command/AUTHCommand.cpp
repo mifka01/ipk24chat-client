@@ -1,5 +1,5 @@
 #include "Command/AUTHCommand.hpp"
-#include "Command/Command.hpp"
+#include <iostream>
 #include "utils.hpp"
 
 namespace Command {
@@ -13,25 +13,20 @@ AUTHCommand::AUTHCommand()
                   Parameter("DisplayName", "[\\x21-\\x7E]", 20),
               }) {}
 
-std::string AUTHCommand::generateMessage(Protocol::Type protocol,
-                                         std::string message) {
+void AUTHCommand::execute(Protocol::Protocol& protocol,
+                          const std::string& message,
+                          Client::Session& session) {
+  if (session.state == Client::State::OPEN) {
+    std::cerr << "ERR: already authenticated\n";
+    return;
+  }
   std::vector<std::string> tokens = totokens(message);
+  session.displayName = tokens[3];
+  session.state = Client::State::AUTH;
+  tokens.erase(tokens.begin());
 
-  if (tokens.size() != 4) {
-    throw std::runtime_error("Invalid number of parameters");
-  }
-
-  switch (protocol) {
-    case Protocol::Type::TCP:
-      return "AUTH " + tokens[1] + " AS " + tokens[3] + " USING " + tokens[2] +
-             "\r\n";
-      break;
-    case Protocol::Type::UDP:
-      return "auth";
-      break;
-    default:
-      throw std::runtime_error("Invalid protocol");
-  }
+  protocol.send(session.socket,
+                protocol.toMessage(Message::Type::AUTH, tokens, session));
 }
 
 }  // namespace Command

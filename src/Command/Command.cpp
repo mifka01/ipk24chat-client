@@ -1,5 +1,4 @@
 #include "Command/Command.hpp"
-#include <sstream>
 
 namespace Command {
 
@@ -8,18 +7,6 @@ Command::Command(const std::string& name,
                  const std::vector<Parameter>& parameters)
     : name(name), prefix(prefix), parameters(parameters) {
   generateRegex();
-}
-
-std::vector<std::string> splitMessage(const std::string& message) {
-  std::stringstream ss(message);
-  std::string word;
-  std::vector<std::string> tokens;
-
-  while (ss >> word) {
-    tokens.push_back(word);
-  }
-
-  return tokens;
 }
 
 void Command::generateRegex() {
@@ -37,6 +24,7 @@ void Command::generateRegex() {
   pattern += WHITESPACE_REGEX + "$";
 
   try {
+    regex = std::regex(pattern);
   } catch (std::regex_error& e) {
     throw std::runtime_error("Failed to build regex: " + std::string(e.what()));
   }
@@ -44,6 +32,10 @@ void Command::generateRegex() {
 
 bool Command::match(const std::string& message) const {
   return std::regex_match(message, regex);
+}
+
+const std::string& Command::getPrefix() const {
+  return prefix;
 }
 
 }  // namespace Command

@@ -3,9 +3,9 @@
 
 namespace Command {
 
-class AUTHCommand : public Command {
+class JOINCommand : public Command {
  public:
-  AUTHCommand();
+  JOINCommand();
 
   void execute(Protocol::Protocol& protocol,
                const std::string& message,

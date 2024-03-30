@@ -2,8 +2,9 @@
 #include <regex>
 #include <string>
 #include <vector>
+#include "Client/Session.hpp"
 #include "Parameter.hpp"
-#include "Protocol/Type.hpp"
+#include "Protocol/Protocol.hpp"
 
 namespace Command {
 
@@ -26,10 +27,11 @@ class Command {
 
   bool match(const std::string& message) const;
 
-  std::string& getPrefix() const;
+  const std::string& getPrefix() const;
 
-  virtual std::string generateMessage(Protocol::Type protocol,
-                                      std::string message) = 0;
+  virtual void execute(Protocol::Protocol& protocol,
+                       const std::string& message,
+                       Client::Session& session) = 0;
   virtual ~Command() = default;
 };
 
