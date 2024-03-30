@@ -1,22 +1,23 @@
 #include <Client/Client.hpp>
-#include <Client/SocketPoller.hpp>
+#include <Message/MessageVisitor.hpp>
 #include <iostream>
 
 namespace Client {
 
 Client::Client(const std::string& host,
                const int& port,
-               const Protocol::Type& protocol)
+               Protocol::Protocol& protocol)
     : host(host), port(port), protocol(protocol) {
+  visitor = std::make_unique<Message::MessageVisitor>(*this);
   addrinfo* addr = getAddress();
 
-  socket = ::socket(addr->ai_family, addr->ai_socktype, 0);
-  if (socket <= 0) {
+  session.socket = ::socket(addr->ai_family, addr->ai_socktype, 0);
+  if (session.socket <= 0) {
     freeaddrinfo(addr);
     throw std::runtime_error("Failed to create socket");
   }
 
-  if (::connect(socket, addr->ai_addr, addr->ai_addrlen) < 0) {
+  if (::connect(session.socket, addr->ai_addr, addr->ai_addrlen) < 0) {
     freeaddrinfo(addr);
     throw std::runtime_error("Failed to connect to server");
   }
@@ -27,7 +28,7 @@ addrinfo* Client::getAddress() {
   addrinfo hints, *addrinfo;
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_UNSPEC;
-  hints.ai_socktype = Protocol::socketType(protocol);
+  hints.ai_socktype = protocol.socketType();
 
   if (getaddrinfo(host.c_str(), std::to_string(port).c_str(), &hints,
                   &addrinfo) != 0) {
@@ -36,32 +37,80 @@ addrinfo* Client::getAddress() {
   return addrinfo;
 }
 
-void Client::send(const std::string& message) {
-  if (::send(socket, message.c_str(), message.size(), 0) < 0) {
-    throw std::runtime_error("Failed to send message");
-  }
-}
-
-std::string Client::receive() {
-  char buffer[1024];
-  int bytes = ::recv(socket, buffer, sizeof(buffer), 0);
-  if (bytes < 0) {
-    throw std::runtime_error("Failed to receive message");
-  }
-  return std::string(buffer, bytes);
-}
-
 void Client::close() {
-  if (socket > 0) {
-    ::close(socket);
+  if (session.socket > 0) {
+    ::close(session.socket);
   }
+}
+
+bool Client::processCommand(const std::string& message) {
+  for (const auto& [name, command] : commandRegistry.commands) {
+    if (command->match(message)) {
+      command->execute(protocol, message, session);
+      return true;
+    }
+  }
+  return false;
+}
+
+void Client::processInput() {
+  State state = getState();
+  if (state == State::AUTH) {
+    return;
+  }
+
+  std::string message;
+  std::getline(std::cin, message);
+  if (message.empty()) {
+    return;
+  }
+  if (processCommand(message)) {
+    return;
+  }
+
+  if (std::any_of(commandRegistry.prefixes.begin(),
+                  commandRegistry.prefixes.end(),
+                  [&message](const std::string& prefix) {
+                    return message.starts_with(prefix);
+                  })) {
+    std::cerr << "ERR: trying to process an unknown or otherwise malformed "
+                 "command.\n";
+    return;
+  }
+
+  if (state == State::START) {
+    if (message == "BYE") {
+      protocol.send(session.socket,
+                    protocol.toMessage(Message::Type::BYE, {}, session));
+      state = State::END;
+      return;
+    }
+  }
+  if (state == State::OPEN) {
+    if (message == "BYE") {
+      protocol.send(session.socket,
+                    protocol.toMessage(Message::Type::BYE, {}, session));
+      state = State::END;
+      return;
+    }
+    protocol.send(session.socket,
+                  protocol.toMessage(Message::Type::MSG, {message}, session));
+    return;
+  }
+
+  std::cerr << "ERR: trying to send a message in non-open state\n";
+}
+
+void Client::processReply() {
+  std::unique_ptr<Message::Message> reply = protocol.receive(session.socket);
+  reply->accept(*visitor);
 }
 
 void Client::run() {
   SocketPoller poller;
 
   poller.addSocket(STDIN_FILENO, POLLIN);
-  poller.addSocket(socket, POLLIN);
+  poller.addSocket(session.socket, POLLIN);
 
   while (true) {
     int events = poller.poll();
@@ -71,21 +120,10 @@ void Client::run() {
     }
 
     if (poller.hasEvent(0, POLLIN)) {
-      std::string message;
-      std::getline(std::cin, message);
-
-      for (const auto& command : commandRegistry.commands) {
-        if (command.second->match(message)) {
-          message = command.second->generateMessage(protocol, message);
-          send(message);
-          break;
-        }
-      }
+      processInput();
     }
-
     if (poller.hasEvent(1, POLLIN)) {
-      std::string message = receive();
-      std::cerr << "Received: " << message << std::endl;
+      processReply();
     }
   }
 }
