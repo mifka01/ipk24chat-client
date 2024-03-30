@@ -17,12 +17,12 @@ Client::Client(const std::string& host,
   if (session.socket <= 0) {
     throw std::runtime_error("Failed to create socket");
   }
-
-  if (::connect(session.socket, addr->ai_addr, addr->ai_addrlen) < 0) {
-    freeaddrinfo(addr);
-    throw std::runtime_error("Failed to connect to server");
-  }
   session.serverAddr = address->ai_addr;
+
+  if (protocol->socketType() == SOCK_STREAM &&
+      ::connect(session.socket, address->ai_addr, address->ai_addrlen) != 0) {
+    throw std::runtime_error("Failed to connect");
+  }
 }
 
 addrinfo* Client::getAddress() {
