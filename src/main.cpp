@@ -9,7 +9,6 @@
 #include "Command/HELPCommand.hpp"
 #include "Command/JOINCommand.hpp"
 #include "Command/RENAMECommand.hpp"
-#include "Protocol/TCP.hpp"
 #include "arguments.hpp"
 
 int main(int argc, char* argv[]) {
@@ -17,7 +16,8 @@ int main(int argc, char* argv[]) {
     std::unordered_map<std::string, std::string> args =
         parse_arguments(argc, argv);
 
-    Protocol::TCP protocol = Protocol::TCP();
+    std::string protocol = args["transport"];
+    transform(protocol.begin(), protocol.end(), protocol.begin(), ::toupper);
 
     Client::Client client(args["server"], std::stoi(args["port"]), protocol);
 

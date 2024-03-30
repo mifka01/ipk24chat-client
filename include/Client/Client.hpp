@@ -19,6 +19,7 @@ namespace Client {
 class Client {
   const std::string& host;
   const int& port;
+  addrinfo* address;
 
   addrinfo* getAddress();
 
@@ -30,9 +31,7 @@ class Client {
   void processReply();
 
  public:
-  Client(const std::string& host,
-         const int& port,
-         Protocol::Protocol& protocol);
+  Client(const std::string& host, const int& port, const std::string& protocol);
   ~Client();
 
   void run();
@@ -41,7 +40,7 @@ class Client {
 
   Command::CommandRegistry commandRegistry;
   Session session;
-  Protocol::Protocol& protocol;
+  std::shared_ptr<Protocol::Protocol> protocol;
   std::unique_ptr<Message::MessageVisitor> visitor;
 };
 
