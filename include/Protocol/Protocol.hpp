@@ -7,14 +7,21 @@
 namespace Protocol {
 
 class Protocol {
+ protected:
+  Client::Session& session;
+
  public:
+  Protocol(Client::Session& session) : session(session) {}
   virtual int socketType() = 0;
   virtual std::string toString() = 0;
+  virtual ~Protocol() = default;
 
-  virtual std::unique_ptr<Message::Message> toMessage(
+  std::unique_ptr<Message::Message> toMessage(
       const Message::Type message,
-      const std::vector<std::string>& parameters,
-      Client::Session& session) = 0;
+      const std::vector<std::string>& parameters);
+
+  static std::shared_ptr<Protocol> fromString(const std::string& protocol,
+                                              Client::Session& session);
 
   virtual void send(int socket, std::unique_ptr<Message::Message> message) = 0;
   virtual std::unique_ptr<Message::Message> receive(int socket) = 0;
