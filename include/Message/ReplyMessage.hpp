@@ -10,12 +10,14 @@ class ReplyMessage : public Message {
   bool success;
   std::string content;
 
-  ReplyMessage(bool success, const std::string& content);
+  ReplyMessage(const uint16_t messageID,
+               bool success,
+               const std::string& content);
 
   void accept(MessageVisitor& visitor) override;
 
   std::string tcpSerialize() const override;
-  std::string udpSerialize() const override;
+  std::vector<uint8_t> udpSerialize() const override;
 };
 
 }  // namespace Message

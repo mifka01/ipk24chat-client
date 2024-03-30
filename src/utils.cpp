@@ -12,3 +12,10 @@ std::vector<std::string> totokens(const std::string& str) {
 
   return tokens;
 }
+
+void addBytes(std::vector<uint8_t>& dst, const std::string& str) {
+  for (char c : str) {
+    dst.push_back(c);
+  }
+  dst.push_back(0);
+}
