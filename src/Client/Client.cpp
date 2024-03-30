@@ -1,6 +1,7 @@
 #include <Client/Client.hpp>
 #include <Message/MessageVisitor.hpp>
 #include <iostream>
+#include "Protocol/Type.hpp"
 
 namespace Client {
 
@@ -19,7 +20,7 @@ Client::Client(const std::string& host,
   }
   session.serverAddr = address->ai_addr;
 
-  if (protocol->socketType() == SOCK_STREAM &&
+  if (protocol->getType() == Protocol::Type::TCP &&
       ::connect(session.socket, address->ai_addr, address->ai_addrlen) != 0) {
     throw std::runtime_error("Failed to connect");
   }

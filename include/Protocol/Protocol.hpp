@@ -3,6 +3,7 @@
 #include <string>
 #include "Client/Session.hpp"
 #include "Message/Message.hpp"
+#include "Type.hpp"
 
 namespace Protocol {
 
@@ -14,6 +15,7 @@ class Protocol {
   Protocol(Client::Session& session) : session(session) {}
   virtual int socketType() = 0;
   virtual std::string toString() = 0;
+  virtual Type getType() = 0;
   virtual ~Protocol() = default;
 
   std::unique_ptr<Message::Message> toMessage(

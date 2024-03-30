@@ -25,6 +25,7 @@ class TCP : public Protocol {
   TCP(Client::Session& session) : Protocol(session){};
   inline int socketType() override { return SOCK_STREAM; }
   inline std::string toString() override { return "TCP"; }
+  inline Type getType() override { return Type::TCP; }
 
   void send(int socket, std::unique_ptr<Message::Message> message) override;
   std::unique_ptr<Message::Message> receive(int socket) override;
