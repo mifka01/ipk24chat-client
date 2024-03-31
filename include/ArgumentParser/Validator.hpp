@@ -5,6 +5,7 @@
  */
 #pragma once
 #include <functional>
+#include <limits>
 #include <unordered_map>
 #include "Argument.hpp"
 #include "Type.hpp"

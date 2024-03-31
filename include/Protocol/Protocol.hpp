@@ -1,6 +1,7 @@
 #pragma once
 #include <poll.h>
 #include <sys/socket.h>
+#include <memory>
 #include <string>
 #include "Message/Message.hpp"
 #include "Type.hpp"

@@ -76,7 +76,7 @@ std::string Argument::getOutputName() const {
     return name.substr(2);
   }
   std::string lower = name;
-  std::transform(name.begin(), name.end(), lower.begin(), ::tolower);
+  transform(name.begin(), name.end(), lower.begin(), ::tolower);
   return lower;
 }
 std::string Argument::getShortcut() const {

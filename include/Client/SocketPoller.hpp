@@ -5,6 +5,7 @@
  */
 #pragma once
 #include <poll.h>
+#include <algorithm>
 #include <vector>
 
 namespace Client {

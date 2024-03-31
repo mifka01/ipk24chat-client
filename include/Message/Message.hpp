@@ -1,5 +1,7 @@
 #pragma once
+#include <cstdint>
 #include <string>
+#include <vector>
 #include "Pattern.hpp"
 #include "Type.hpp"
 
