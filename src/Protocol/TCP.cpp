@@ -1,9 +1,12 @@
 #include "Protocol/TCP.hpp"
+#include <unistd.h>
 #include <regex>
+#include "Client/Client.hpp"
 #include "Message/ByeMessage.hpp"
 #include "Message/ErrMessage.hpp"
 #include "Message/MsgMessage.hpp"
 #include "Message/ReplyMessage.hpp"
+#include "iostream"
 #include "utils.hpp"
 
 namespace Protocol {
@@ -11,7 +14,7 @@ namespace Protocol {
 void TCP::send(int socket, std::unique_ptr<Message::Message> message) {
   std::string msg = message->tcpSerialize();
   ::send(socket, msg.c_str(), msg.size(), 0);
-  session.messagesSent++;
+  client.session.messagesSent++;
 }
 
 std::unique_ptr<Message::Message> TCP::receive(int socket) {
@@ -69,6 +72,91 @@ std::unique_ptr<Message::Message> TCP::receive(int socket) {
     }
   }
   throw std::runtime_error("Failed to parse message");
+}
+
+bool TCP::processCommand(const std::string& message) {
+  for (const auto& [name, command] : client.commandRegistry.commands) {
+    if (command->match(message)) {
+      command->execute(client.protocol, message, client.session);
+      return true;
+    }
+  }
+  return false;
+}
+
+void TCP::processInput() {
+  Client::State state = client.getState();
+  if (state == Client::State::AUTH) {
+    return;
+  }
+
+  std::string message;
+  std::getline(std::cin, message);
+  if (message.empty()) {
+    return;
+  }
+  if (processCommand(message)) {
+    return;
+  }
+
+  if (std::any_of(client.commandRegistry.prefixes.begin(),
+                  client.commandRegistry.prefixes.end(),
+                  [&message](const std::string& prefix) {
+                    return message.starts_with(prefix);
+                  })) {
+    std::cerr << "ERR: trying to process an unknown or otherwise malformed "
+                 "command.\n";
+    return;
+  }
+
+  if (state == Client::State::START) {
+    if (message == "BYE") {
+      client.protocol->send(client.session.socket,
+                            client.protocol->toMessage(Message::Type::BYE, {}));
+      state = Client::State::END;
+      return;
+    }
+  }
+  if (state == Client::State::OPEN) {
+    if (message == "BYE") {
+      client.protocol->send(client.session.socket,
+                            client.protocol->toMessage(Message::Type::BYE, {}));
+      state = Client::State::END;
+      return;
+    }
+    client.protocol->send(
+        client.session.socket,
+        client.protocol->toMessage(Message::Type::MSG, {message}));
+    return;
+  }
+
+  std::cerr << "ERR: trying to send a message in non-open state\n";
+}
+
+void TCP::processReply() {
+  std::unique_ptr<Message::Message> reply =
+      client.protocol->receive(client.session.socket);
+  reply->accept(*client.visitor);
+}
+
+void TCP::run() {
+  client.poller.addSocket(STDIN_FILENO, POLLIN);
+  client.poller.addSocket(client.session.socket, POLLIN);
+
+  while (true) {
+    int events = client.poller.poll();
+
+    if (events < 0) {
+      throw std::runtime_error("Failed to poll");
+    }
+
+    if (client.poller.hasEvent(0, POLLIN)) {
+      processInput();
+    }
+    if (client.poller.hasEvent(1, POLLIN)) {
+      processReply();
+    }
+  }
 }
 
 }  // namespace Protocol

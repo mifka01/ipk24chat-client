@@ -21,11 +21,17 @@ class TCP : public Protocol {
       {Message::Type::BYE, std::regex("BYE" + clrf)},
   };
 
+  bool processCommand(const std::string& message);
+  void processInput();
+  void processReply();
+
  public:
-  TCP(Client::Session& session) : Protocol(session){};
+  TCP(Client::Client& client) : Protocol(client){};
   inline int socketType() override { return SOCK_STREAM; }
   inline std::string toString() override { return "TCP"; }
   inline Type getType() override { return Type::TCP; }
+
+  void run() override;
 
   void send(int socket, std::unique_ptr<Message::Message> message) override;
   std::unique_ptr<Message::Message> receive(int socket) override;

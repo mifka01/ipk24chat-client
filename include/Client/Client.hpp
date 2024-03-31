@@ -1,7 +1,6 @@
 #pragma once
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <poll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -25,11 +24,6 @@ class Client {
 
   void close();
 
-  bool processCommand(const std::string& message);
-
-  void processInput();
-  void processReply();
-
  public:
   Client(const std::string& host, const int& port, const std::string& protocol);
   ~Client();
@@ -40,6 +34,7 @@ class Client {
 
   Command::CommandRegistry commandRegistry;
   Session session;
+  SocketPoller poller;
   std::shared_ptr<Protocol::Protocol> protocol;
   std::unique_ptr<Message::MessageVisitor> visitor;
 };
