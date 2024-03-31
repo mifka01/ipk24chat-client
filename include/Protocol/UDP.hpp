@@ -8,6 +8,7 @@ class UDP : public Protocol {
   bool processCommand(const std::string& message);
   bool processInput();
   void processReply();
+  std::unique_ptr<Message::Message> lastSentMessage;
 
  public:
   UDP(Client::Client& client) : Protocol(client){};
