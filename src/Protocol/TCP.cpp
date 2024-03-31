@@ -72,7 +72,8 @@ std::unique_ptr<Message::Message> TCP::receive() {
         throw std::runtime_error("Invalid message type");
     }
   }
-  throw std::runtime_error("Invalid message type");
+  send(toMessage(Message::Type::ERR, {"Invalid format of message"}));
+  throw std::runtime_error("Invalid format of message");
 }
 
 bool TCP::processCommand(const std::string& message) {
