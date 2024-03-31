@@ -12,6 +12,7 @@ class MsgMessage;
 class ByeMessage;
 class JoinMessage;
 class AuthMessage;
+class ConfirmMessage;
 
 class MessageVisitor {
   Client::Client& client;
@@ -24,5 +25,6 @@ class MessageVisitor {
   void visit(ByeMessage& bye);
   void visit(JoinMessage& bye);
   void visit(AuthMessage& bye);
+  void visit(ConfirmMessage& bye);
 };
 }  // namespace Message

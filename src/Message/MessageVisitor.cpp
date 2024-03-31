@@ -42,5 +42,6 @@ void MessageVisitor::visit(ErrMessage& err) {
 
 void MessageVisitor::visit(__attribute__((unused)) JoinMessage& join) {}
 void MessageVisitor::visit(__attribute__((unused)) AuthMessage& auth) {}
+void MessageVisitor::visit(__attribute__((unused)) ConfirmMessage& auth) {}
 
 }  // namespace Message
