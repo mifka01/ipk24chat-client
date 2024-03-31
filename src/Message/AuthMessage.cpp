@@ -28,7 +28,8 @@ void AuthMessage::accept(MessageVisitor& visitor) {
 }
 
 std::string AuthMessage::tcpSerialize() const {
-  return "AUTH " + username + " AS " + displayName + " USING " + secret;
+  return "AUTH " + username + " AS " + displayName + " USING " + secret +
+         Message::clrf;
 }
 std::vector<uint8_t> AuthMessage::udpSerialize() const {
   std::vector<uint8_t> message;

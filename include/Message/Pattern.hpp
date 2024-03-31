@@ -12,6 +12,7 @@ class Pattern {
   static const std::string content;
   static const std::string channelID;
   static const std::string secret;
+  static const std::string clrf;
 };
 
 }  // namespace Message

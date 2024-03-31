@@ -6,8 +6,9 @@ namespace Message {
 
 ReplyMessage::ReplyMessage(const uint16_t messageID,
                            bool success,
-                           const std::string& content)
-    : success(success), content(content) {
+                           const std::string& content,
+                           const uint16_t refMessageID)
+    : success(success), content(content), refMessageID(refMessageID) {
   id = messageID;
   type = Type::REPLY;
 
@@ -22,7 +23,7 @@ void ReplyMessage::accept(MessageVisitor& visitor) {
 
 std::string ReplyMessage::tcpSerialize() const {
   std::string status = success ? "OK" : "NOK";
-  return "REPLY " + status + " IS " + content;
+  return "REPLY " + status + " IS " + content + Message::clrf;
 }
 
 std::vector<uint8_t> ReplyMessage::udpSerialize() const {
@@ -31,6 +32,8 @@ std::vector<uint8_t> ReplyMessage::udpSerialize() const {
   message.push_back(static_cast<uint8_t>(id));
   message.push_back(static_cast<uint8_t>(id >> 8));
   message.push_back(success ? 1 : 0);
+  message.push_back(static_cast<uint8_t>(refMessageID));
+  message.push_back(static_cast<uint8_t>(refMessageID >> 8));
   addBytes(message, content);
   return message;
 }

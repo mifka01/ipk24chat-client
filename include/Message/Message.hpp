@@ -10,6 +10,9 @@ namespace Message {
 class MessageVisitor;
 
 class Message {
+ protected:
+  const std::string clrf = "\\r\\n";
+
  public:
   uint16_t id = 0;
   Type type;

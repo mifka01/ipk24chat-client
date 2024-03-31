@@ -7,18 +7,17 @@
 
 namespace Protocol {
 class TCP : public Protocol {
-  const std::string clrf = "\\r\\n";
-
   const std::map<Message::Type, std::regex> regexes = {
       {Message::Type::MSG,
        std::regex("MSG FROM " + Message::Pattern::username + " IS " +
-                  Message::Pattern::content + clrf)},
+                  Message::Pattern::content + Message::Pattern::clrf)},
       {Message::Type::REPLY,
-       std::regex("REPLY (OK|NOK) IS " + Message::Pattern::content + clrf)},
+       std::regex("REPLY (OK|NOK) IS " + Message::Pattern::content +
+                  Message::Pattern::clrf)},
       {Message::Type::ERR,
        std::regex("ERR FROM " + Message::Pattern::displayName + " IS " +
-                  Message::Pattern::content + clrf)},
-      {Message::Type::BYE, std::regex("BYE" + clrf)},
+                  Message::Pattern::content + Message::Pattern::clrf)},
+      {Message::Type::BYE, std::regex("BYE" + Message::Pattern::clrf)},
   };
 
   bool processCommand(const std::string& message);

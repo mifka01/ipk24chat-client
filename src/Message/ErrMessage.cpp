@@ -26,14 +26,14 @@ void ErrMessage::accept(MessageVisitor& visitor) {
 }
 
 std::string ErrMessage::tcpSerialize() const {
-  return "ERR FROM " + displayName + " IS " + content;
+  return "ERR FROM " + displayName + " IS " + content + Message::clrf;
 }
 
 std::vector<uint8_t> ErrMessage::udpSerialize() const {
   std::vector<uint8_t> message;
   message.push_back(static_cast<uint8_t>(Type::ERR));
-message.push_back(static_cast<uint8_t>(id));
-message.push_back(static_cast<uint8_t>(id >> 8));
+  message.push_back(static_cast<uint8_t>(id));
+  message.push_back(static_cast<uint8_t>(id >> 8));
   addBytes(message, displayName);
   addBytes(message, content);
   return message;

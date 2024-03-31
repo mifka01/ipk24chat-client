@@ -26,14 +26,14 @@ void JoinMessage::accept(MessageVisitor& visitor) {
 }
 
 std::string JoinMessage::tcpSerialize() const {
-  return "JOIN " + channelID + " AS " + displayName;
+  return "JOIN " + channelID + " AS " + displayName + Message::clrf;
 }
 
 std::vector<uint8_t> JoinMessage::udpSerialize() const {
   std::vector<uint8_t> message;
   message.push_back(static_cast<uint8_t>(Type::JOIN));
-message.push_back(static_cast<uint8_t>(id));
-message.push_back(static_cast<uint8_t>(id >> 8));
+  message.push_back(static_cast<uint8_t>(id));
+  message.push_back(static_cast<uint8_t>(id >> 8));
   addBytes(message, channelID);
   addBytes(message, displayName);
   return message;
