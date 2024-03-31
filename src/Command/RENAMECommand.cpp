@@ -1,4 +1,5 @@
 #include "Command/RENAMECommand.hpp"
+#include "Client/Client.hpp"
 #include "utils.hpp"
 
 namespace Command {
@@ -13,9 +14,9 @@ RENAMECommand::RENAMECommand()
 void RENAMECommand::execute(__attribute__((unused))
                             std::shared_ptr<Protocol::Protocol> protocol,
                             const std::string& message,
-                            Client::Session& session) {
+                            Client::Client& client) {
   std::vector<std::string> tokens = totokens(message);
-  session.displayName = tokens[1];
+  client.displayName = tokens[1];
 }
 
 }  // namespace Command

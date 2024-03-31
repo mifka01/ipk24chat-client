@@ -17,26 +17,26 @@ std::unique_ptr<Message::Message> Protocol::toMessage(
     const std::vector<std::string>& parameters) {
   switch (message) {
     case Message::Type::JOIN: {
-      return std::make_unique<Message::JoinMessage>(client.session.messagesSent,
+      return std::make_unique<Message::JoinMessage>(client.messagesSent,
                                                     parameters[0],
-                                                    client.session.displayName);
+                                                    client.displayName);
     }
     case Message::Type::AUTH: {
       return std::make_unique<Message::AuthMessage>(
-          client.session.messagesSent, parameters[0], parameters[1],
+          client.messagesSent, parameters[0], parameters[1],
           parameters[2]);
     }
     case Message::Type::MSG: {
-      return std::make_unique<Message::MsgMessage>(client.session.messagesSent,
-                                                   client.session.displayName,
+      return std::make_unique<Message::MsgMessage>(client.messagesSent,
+                                                   client.displayName,
                                                    parameters[0]);
     }
     case Message::Type::BYE: {
-      return std::make_unique<Message::ByeMessage>(client.session.messagesSent);
+      return std::make_unique<Message::ByeMessage>(client.messagesSent);
     }
     case Message::Type::ERR: {
-      return std::make_unique<Message::ErrMessage>(client.session.messagesSent,
-                                                   client.session.displayName,
+      return std::make_unique<Message::ErrMessage>(client.messagesSent,
+                                                   client.displayName,
                                                    parameters[0]);
     }
     default:

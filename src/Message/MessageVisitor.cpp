@@ -9,13 +9,13 @@
 namespace Message {
 
 void MessageVisitor::visit(ReplyMessage& reply) {
-  Client::State state = client.getState();
-  if (state == Client::State::AUTH || state == Client::State::OPEN) {
+  if (client.state == Client::State::AUTH ||
+      client.state == Client::State::OPEN) {
     if (reply.success) {
       std::cerr << "Success: " << reply.content << "\n";
-      client.setState(Client::State::OPEN);
+      client.state = Client::State::OPEN;
     } else {
-      client.setState(Client::State::START);
+      client.state = Client::State::START;
       std::cerr << "Failure: " << reply.content << "\n";
     }
   }
@@ -27,17 +27,15 @@ void MessageVisitor::visit(MsgMessage& msg) {
 
 void MessageVisitor::visit(__attribute__((unused)) ByeMessage& bye) {
   std::cout << "BYE\n";
-  client.setState(Client::State::END);
+  client.state = Client::State::END;
   exit(0);
 }
 
 void MessageVisitor::visit(ErrMessage& err) {
-  Client::State state = client.getState();
-  if (state == Client::State::AUTH || state == Client::State::OPEN) {
-    client.protocol->send(
-        client.session.socket,
-        client.protocol->toMessage(Type::BYE, {}));
-    client.setState(Client::State::END);
+  if (client.state == Client::State::AUTH ||
+      client.state == Client::State::OPEN) {
+    client.protocol->send(client.protocol->toMessage(Type::BYE, {}));
+    client.state = Client::State::END;
   }
   std::cerr << "ERR FROM " << err.displayName << ": " << err.content << "\n";
 }

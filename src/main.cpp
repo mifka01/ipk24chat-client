@@ -29,6 +29,9 @@ int main(int argc, char* argv[]) {
                                std::make_unique<Command::RENAMECommand>());
     client.commandRegistry.add("HELP",
                                std::make_unique<Command::HELPCommand>());
+
+    client.timeout = std::stoi(args["timeout"]);
+    client.retries = std::stoi(args["retries"]);
     client.run();
 
   } catch (std::invalid_argument& e) {

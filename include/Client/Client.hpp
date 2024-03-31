@@ -8,7 +8,7 @@
 #include <Command/CommandRegistry.hpp>
 #include <Protocol/Protocol.hpp>
 #include <string>
-#include "Session.hpp"
+#include "Client/State.hpp"
 
 namespace Message {
 class MessageVisitor;
@@ -29,11 +29,16 @@ class Client {
   ~Client();
 
   void run();
-  inline State getState() const { return session.state; }
-  inline void setState(State state) { session.state = state; }
+
+  int socket;
+  int messagesSent = 1;
+  sockaddr* serverAddr;
+  std::string displayName = "";
+  State state = State::START;
+  uint16_t timeout = 250;
+  uint8_t retries = 3;
 
   Command::CommandRegistry commandRegistry;
-  Session session;
   SocketPoller poller;
   std::shared_ptr<Protocol::Protocol> protocol;
   std::unique_ptr<Message::MessageVisitor> visitor;

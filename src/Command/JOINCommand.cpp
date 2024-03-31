@@ -1,5 +1,6 @@
 #include "Command/JOINCommand.hpp"
 #include <iostream>
+#include "Client/Client.hpp"
 #include "utils.hpp"
 
 namespace Command {
@@ -13,15 +14,14 @@ JOINCommand::JOINCommand()
 
 void JOINCommand::execute(std::shared_ptr<Protocol::Protocol> protocol,
                           const std::string& message,
-                          Client::Session& session) {
-  if (session.state != Client::State::OPEN) {
+                          Client::Client& client) {
+  if (client.state != Client::State::OPEN) {
     std::cerr << "ERR: trying to send a message in non-open state\n";
     return;
   }
   std::vector<std::string> tokens = totokens(message);
   tokens.erase(tokens.begin());
-  protocol->send(session.socket,
-                protocol->toMessage(Message::Type::JOIN, tokens));
+  protocol->send(protocol->toMessage(Message::Type::JOIN, tokens));
 }
 
 }  // namespace Command

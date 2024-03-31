@@ -13,14 +13,14 @@ Client::Client(const std::string& host,
   visitor = std::make_unique<Message::MessageVisitor>(*this);
   address = getAddress();
 
-  session.socket = ::socket(address->ai_family, address->ai_socktype, 0);
-  if (session.socket <= 0) {
+  socket = ::socket(address->ai_family, address->ai_socktype, 0);
+  if (socket <= 0) {
     throw std::runtime_error("Failed to create socket");
   }
-  session.serverAddr = address->ai_addr;
+  serverAddr = address->ai_addr;
 
   if (protocol->getType() == Protocol::Type::TCP &&
-      ::connect(session.socket, address->ai_addr, address->ai_addrlen) != 0) {
+      ::connect(socket, address->ai_addr, address->ai_addrlen) != 0) {
     throw std::runtime_error("Failed to connect");
   }
 }
@@ -39,8 +39,8 @@ addrinfo* Client::getAddress() {
 }
 
 void Client::close() {
-  if (session.socket > 0) {
-    ::close(session.socket);
+  if (socket > 0) {
+    ::close(socket);
   }
 }
 

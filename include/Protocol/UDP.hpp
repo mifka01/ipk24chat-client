@@ -5,6 +5,10 @@
 
 namespace Protocol {
 class UDP : public Protocol {
+  bool processCommand(const std::string& message);
+  bool processInput();
+  void processReply();
+
  public:
   UDP(Client::Client& client) : Protocol(client){};
   inline int socketType() override { return SOCK_DGRAM; }
@@ -13,8 +17,8 @@ class UDP : public Protocol {
 
   void run() override;
 
-  void send(int socket, std::unique_ptr<Message::Message> message) override;
-  std::unique_ptr<Message::Message> receive(int socket) override;
+  void send(std::unique_ptr<Message::Message> message) override;
+  std::unique_ptr<Message::Message> receive() override;
 };
 
 }  // namespace Protocol

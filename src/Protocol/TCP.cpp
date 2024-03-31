@@ -11,15 +11,15 @@
 
 namespace Protocol {
 
-void TCP::send(int socket, std::unique_ptr<Message::Message> message) {
+void TCP::send(std::unique_ptr<Message::Message> message) {
   std::string msg = message->tcpSerialize();
-  ::send(socket, msg.c_str(), msg.size(), 0);
-  client.session.messagesSent++;
+  ::send(client.socket, msg.c_str(), msg.size(), 0);
+  client.messagesSent++;
 }
 
-std::unique_ptr<Message::Message> TCP::receive(int socket) {
+std::unique_ptr<Message::Message> TCP::receive() {
   char buffer[4096];
-  int bytesReceived = recv(socket, buffer, 1024, 0);
+  int bytesReceived = recv(client.socket, buffer, 1024, 0);
   if (bytesReceived == -1) {
     throw std::runtime_error("Failed to receive message");
   }
@@ -77,7 +77,7 @@ std::unique_ptr<Message::Message> TCP::receive(int socket) {
 bool TCP::processCommand(const std::string& message) {
   for (const auto& [name, command] : client.commandRegistry.commands) {
     if (command->match(message)) {
-      command->execute(client.protocol, message, client.session);
+      command->execute(client.protocol, message, client);
       return true;
     }
   }
@@ -85,7 +85,7 @@ bool TCP::processCommand(const std::string& message) {
 }
 
 void TCP::processInput() {
-  Client::State state = client.getState();
+  Client::State state = client.state;
   if (state == Client::State::AUTH) {
     return;
   }
@@ -111,21 +111,18 @@ void TCP::processInput() {
 
   if (state == Client::State::START) {
     if (message == "BYE") {
-      client.protocol->send(client.session.socket,
-                            client.protocol->toMessage(Message::Type::BYE, {}));
+      client.protocol->send(client.protocol->toMessage(Message::Type::BYE, {}));
       state = Client::State::END;
       return;
     }
   }
   if (state == Client::State::OPEN) {
     if (message == "BYE") {
-      client.protocol->send(client.session.socket,
-                            client.protocol->toMessage(Message::Type::BYE, {}));
+      client.protocol->send(client.protocol->toMessage(Message::Type::BYE, {}));
       state = Client::State::END;
       return;
     }
     client.protocol->send(
-        client.session.socket,
         client.protocol->toMessage(Message::Type::MSG, {message}));
     return;
   }
@@ -134,14 +131,13 @@ void TCP::processInput() {
 }
 
 void TCP::processReply() {
-  std::unique_ptr<Message::Message> reply =
-      client.protocol->receive(client.session.socket);
+  std::unique_ptr<Message::Message> reply = client.protocol->receive();
   reply->accept(*client.visitor);
 }
 
 void TCP::run() {
   client.poller.addSocket(STDIN_FILENO, POLLIN);
-  client.poller.addSocket(client.session.socket, POLLIN);
+  client.poller.addSocket(client.socket, POLLIN);
 
   while (true) {
     int events = client.poller.poll();

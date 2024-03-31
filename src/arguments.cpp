@@ -18,7 +18,7 @@ std::unordered_map<std::string, std::string> parse_arguments(int argc,
   parser.addArgument("--port", "-p", ArgumentParser::Type::UINT16,
                      "Server port", false, "4567");
 
-  parser.addArgument("--udptimeout", "-d", ArgumentParser::Type::UINT16,
+  parser.addArgument("--timeout", "-d", ArgumentParser::Type::UINT16,
                      "UDP confirmation timeout", false, "250");
 
   parser.addArgument("--retries", "-r", ArgumentParser::Type::UINT8,

@@ -1,5 +1,6 @@
 #include "Command/AUTHCommand.hpp"
 #include <iostream>
+#include "Client/Client.hpp"
 #include "utils.hpp"
 
 namespace Command {
@@ -15,18 +16,17 @@ AUTHCommand::AUTHCommand()
 
 void AUTHCommand::execute(std::shared_ptr<Protocol::Protocol> protocol,
                           const std::string& message,
-                          Client::Session& session) {
-  if (session.state == Client::State::OPEN) {
+                          Client::Client& client) {
+  if (client.state == Client::State::OPEN) {
     std::cerr << "ERR: already authenticated\n";
     return;
   }
   std::vector<std::string> tokens = totokens(message);
-  session.displayName = tokens[3];
-  session.state = Client::State::AUTH;
+  client.displayName = tokens[3];
+  client.state = Client::State::AUTH;
   tokens.erase(tokens.begin());
 
-  protocol->send(session.socket,
-                 protocol->toMessage(Message::Type::AUTH, tokens));
+  protocol->send(protocol->toMessage(Message::Type::AUTH, tokens));
 }
 
 }  // namespace Command

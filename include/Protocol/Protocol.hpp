@@ -31,8 +31,8 @@ class Protocol {
   static std::shared_ptr<Protocol> fromString(const std::string& protocol,
                                               Client::Client& client);
 
-  virtual void send(int socket, std::unique_ptr<Message::Message> message) = 0;
-  virtual std::unique_ptr<Message::Message> receive(int socket) = 0;
+  virtual void send(std::unique_ptr<Message::Message> message) = 0;
+  virtual std::unique_ptr<Message::Message> receive() = 0;
 };
 
 }  // namespace Protocol

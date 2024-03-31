@@ -33,8 +33,8 @@ class TCP : public Protocol {
 
   void run() override;
 
-  void send(int socket, std::unique_ptr<Message::Message> message) override;
-  std::unique_ptr<Message::Message> receive(int socket) override;
+  void send(std::unique_ptr<Message::Message> message) override;
+  std::unique_ptr<Message::Message> receive() override;
 };
 
 }  // namespace Protocol

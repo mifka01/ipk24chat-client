@@ -9,7 +9,7 @@ class AUTHCommand : public Command {
 
   void execute(std::shared_ptr<Protocol::Protocol> protocol,
                const std::string& message,
-               Client::Session& session) override;
+               Client::Client& client) override;
 };
 
 }  // namespace Command

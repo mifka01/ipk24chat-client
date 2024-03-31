@@ -2,7 +2,6 @@
 #include <regex>
 #include <string>
 #include <vector>
-#include "Client/Session.hpp"
 #include "Parameter.hpp"
 #include "Protocol/Protocol.hpp"
 
@@ -31,7 +30,7 @@ class Command {
 
   virtual void execute(std::shared_ptr<Protocol::Protocol> protocol,
                        const std::string& message,
-                       Client::Session& session) = 0;
+                       Client::Client& client) = 0;
   virtual ~Command() = default;
 };
 
