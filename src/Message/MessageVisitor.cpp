@@ -18,13 +18,6 @@ void MessageVisitor::visit(ReplyMessage& reply) {
       client.state = Client::State::START;
     std::cerr << "Failure: " << reply.content << "\n";
   }
-
-  if (reply.refMessageID != 0) {
-    std::cerr << reply.refMessageID << "\n";
-
-    client.protocol->send(
-        client.protocol->toMessage(Type::CONFIRM, {std::to_string(reply.id)}));
-  }
 }
 
 void MessageVisitor::visit(MsgMessage& msg) {
