@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <regex>
 #include "Client/Client.hpp"
+#include "Client/State.hpp"
 #include "Message/ByeMessage.hpp"
 #include "Message/ErrMessage.hpp"
 #include "Message/MsgMessage.hpp"
@@ -71,7 +72,7 @@ std::unique_ptr<Message::Message> TCP::receive() {
         throw std::runtime_error("Invalid message type");
     }
   }
-  throw std::runtime_error("Failed to parse message");
+  throw std::runtime_error("Invalid message type");
 }
 
 bool TCP::processCommand(const std::string& message) {
@@ -85,11 +86,6 @@ bool TCP::processCommand(const std::string& message) {
 }
 
 void TCP::processInput() {
-  Client::State state = client.state;
-  if (state == Client::State::AUTH) {
-    return;
-  }
-
   std::string message;
   std::getline(std::cin, message);
   if (message.empty()) {
@@ -109,25 +105,14 @@ void TCP::processInput() {
     return;
   }
 
-  if (state == Client::State::START) {
-    if (message == "BYE") {
-      client.protocol->send(client.protocol->toMessage(Message::Type::BYE, {}));
-      state = Client::State::END;
-      return;
-    }
-  }
-  if (state == Client::State::OPEN) {
-    if (message == "BYE") {
-      client.protocol->send(client.protocol->toMessage(Message::Type::BYE, {}));
-      state = Client::State::END;
-      return;
-    }
-    client.protocol->send(
-        client.protocol->toMessage(Message::Type::MSG, {message}));
+  if (message == "BYE") {
+    client.protocol->send(client.protocol->toMessage(Message::Type::BYE, {}));
+    client.state = Client::State::END;
     return;
   }
 
-  std::cerr << "ERR: trying to send a message in non-open state\n";
+  client.protocol->send(
+      client.protocol->toMessage(Message::Type::MSG, {message}));
 }
 
 void TCP::processReply() {
@@ -140,17 +125,48 @@ void TCP::run() {
   client.poller.addSocket(client.socket, POLLIN);
 
   while (true) {
-    int events = client.poller.poll();
+    if (client.state == Client::State::START) {
+      int events = client.poller.poll();
+      if (events < 0) {
+        throw std::runtime_error("Failed to poll");
+      }
+      if (client.poller.hasEvent(0, POLLIN)) {
+        std::string message;
+        std::getline(std::cin, message);
+        if (message == "BYE") {
+          client.state = Client::State::END;
+          continue;
+        } else if (!message.empty() && !processCommand(message)) {
+          std::cerr << "ERR: trying to send a message in non-open state\n";
+        }
+      }
+      if (client.poller.hasEvent(1, POLLIN)) {
+        processReply();
+      }
+    } else if (client.state == Client::State::AUTH) {
+      int events = client.poller.poll();
+      if (events < 0) {
+        throw std::runtime_error("Failed to poll");
+      }
 
-    if (events < 0) {
-      throw std::runtime_error("Failed to poll");
-    }
+      if (client.poller.hasEvent(1, POLLIN)) {
+        processReply();
+      }
+    } else if (client.state == Client::State::OPEN) {
+      int events = client.poller.poll();
+      if (events < 0) {
+        throw std::runtime_error("Failed to poll");
+      }
 
-    if (client.poller.hasEvent(0, POLLIN)) {
-      processInput();
-    }
-    if (client.poller.hasEvent(1, POLLIN)) {
-      processReply();
+      if (client.poller.hasEvent(0, POLLIN)) {
+        processInput();
+      }
+      if (client.poller.hasEvent(1, POLLIN)) {
+        processReply();
+      }
+    } else if (client.state == Client::State::END) {
+      client.protocol->send(client.protocol->toMessage(Message::Type::BYE, {}));
+      break;
     }
   }
 }

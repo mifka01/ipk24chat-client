@@ -9,15 +9,21 @@
 namespace Message {
 
 void MessageVisitor::visit(ReplyMessage& reply) {
-  if (client.state == Client::State::AUTH ||
-      client.state == Client::State::OPEN) {
-    if (reply.success) {
-      std::cerr << "Success: " << reply.content << "\n";
+  if (reply.success) {
+    std::cerr << "Success: " << reply.content << "\n";
+    if (client.state == Client::State::AUTH)
       client.state = Client::State::OPEN;
-    } else {
+  } else {
+    if (client.state == Client::State::AUTH)
       client.state = Client::State::START;
-      std::cerr << "Failure: " << reply.content << "\n";
-    }
+    std::cerr << "Failure: " << reply.content << "\n";
+  }
+
+  if (reply.refMessageID != 0) {
+    std::cerr << reply.refMessageID << "\n";
+
+    client.protocol->send(
+        client.protocol->toMessage(Type::CONFIRM, {std::to_string(reply.id)}));
   }
 }
 
@@ -28,16 +34,11 @@ void MessageVisitor::visit(MsgMessage& msg) {
 void MessageVisitor::visit(__attribute__((unused)) ByeMessage& bye) {
   std::cout << "BYE\n";
   client.state = Client::State::END;
-  exit(0);
 }
 
 void MessageVisitor::visit(ErrMessage& err) {
-  if (client.state == Client::State::AUTH ||
-      client.state == Client::State::OPEN) {
-    client.protocol->send(client.protocol->toMessage(Type::BYE, {}));
-    client.state = Client::State::END;
-  }
   std::cerr << "ERR FROM " << err.displayName << ": " << err.content << "\n";
+  client.state = Client::State::END;
 }
 
 void MessageVisitor::visit(__attribute__((unused)) JoinMessage& join) {}
