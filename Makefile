@@ -25,6 +25,9 @@ OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SRCS))
 # Output executable
 TARGET := ipk24chat-client
 
+# Output archive
+ARCHIVE := xmifka00.zip
+
 # Build rule
 .PHONY: all
 all: $(TARGET)
@@ -50,6 +53,11 @@ clean:
 .PHONY: run
 run: $(TARGET)
 	./$(TARGET)
+
+# Pack method to create a zip archive
+.PHONY: pack
+pack:
+	find $(SRC_DIR) $(INCLUDE_DIR) -type f -not -path '*/\.*' -not -name '*.DS_Store' | zip -@ $(ARCHIVE) $(SRC_DIR) $(INCLUDE_DIR) Makefile README.md CHANGELOG.md LICENSE
 
 # Default target
 .DEFAULT_GOAL := all
