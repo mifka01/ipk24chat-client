@@ -36,6 +36,7 @@ std::unique_ptr<Message::Message> UDP::receive() {
   socklen_t serverAddrLen = sizeof(*client.serverAddr);
   ssize_t received = recvfrom(client.socket, buffer, sizeof(buffer), 0,
                               client.serverAddr, &serverAddrLen);
+
   if (received == -1) {
     throw std::runtime_error("Failed to receive message");
   }
@@ -113,6 +114,7 @@ bool UDP::processInput() {
   if (message.empty()) {
     return false;
   }
+
   if (processCommand(message)) {
     return true;
   }
@@ -123,7 +125,8 @@ bool UDP::processInput() {
                     return message.starts_with(prefix);
                   })) {
     std::cerr << "ERR: trying to process an unknown or otherwise malformed "
-                 "command.\n";
+                 "command."
+              << std::endl;
     return false;
   }
 
@@ -133,9 +136,15 @@ bool UDP::processInput() {
     return false;
   }
 
-  client.protocol->send(
-      client.protocol->toMessage(Message::Type::MSG, {message}));
-  return true;
+  if (client.state == Client::State::OPEN) {
+    client.protocol->send(
+        client.protocol->toMessage(Message::Type::MSG, {message}));
+    nextState = Client::State::OPEN;
+    return true;
+  }
+
+  std::cerr << "ERR: trying to send a message in non-open state" << std::endl;
+  return false;
 }
 
 void UDP::setNextState(Client::State state) {
@@ -175,47 +184,7 @@ void UDP::run() {
 
   while (true) {
     curRetries = 0;
-    if (client.state == Client::State::START) {
-      int events = client.poller.poll();
-      if (events < 0) {
-        throw std::runtime_error("Failed to poll");
-      }
-      if (client.poller.hasEvent(0, POLLIN)) {
-        std::string message;
-        std::getline(std::cin, message);
-        if (message == "BYE") {
-          client.state = Client::State::CONFIRM;
-          nextState = Client::State::END;
-          continue;
-        } else if (!message.empty() && !processCommand(message)) {
-          std::cerr << "ERR: trying to send a message in non-open state\n";
-        }
-      }
-      if (client.poller.hasEvent(1, POLLIN)) {
-        processReply();
-      }
-    } else if (client.state == Client::State::AUTH) {
-      int events = client.poller.poll();
-      if (events < 0) {
-        throw std::runtime_error("Failed to poll");
-      }
-
-      if (client.poller.hasEvent(1, POLLIN)) {
-        processReply();
-      }
-    } else if (client.state == Client::State::OPEN) {
-      int events = client.poller.poll();
-      if (events < 0) {
-        throw std::runtime_error("Failed to poll");
-      }
-
-      if (client.poller.hasEvent(0, POLLIN)) {
-        processInput();
-      }
-      if (client.poller.hasEvent(1, POLLIN)) {
-        processReply();
-      }
-    } else if (client.state == Client::State::END) {
+    if (client.state == Client::State::END) {
       client.protocol->send(client.protocol->toMessage(Message::Type::BYE, {}));
       break;
     } else if (client.state == Client::State::CONFIRM) {
@@ -238,8 +207,19 @@ void UDP::run() {
         send(std::move(lastSentMessage));
       }
       if (client.state == Client::State::CONFIRM) {
-        std::cerr << "ERR: message lost in transit << std::endl";
+        std::cerr << "ERR: message lost in transit" << std::endl;
         client.state = lastState;
+      }
+    } else {
+      int events = client.poller.poll();
+      if (events < 0) {
+        throw std::runtime_error("Failed to poll");
+      }
+      if (client.poller.hasEvent(0, POLLIN)) {
+        processInput();
+      }
+      if (client.poller.hasEvent(1, POLLIN)) {
+        processReply();
       }
     }
   }
