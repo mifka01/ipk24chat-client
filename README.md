@@ -164,6 +164,11 @@ Klient byl schopen správně reagovat na příkazy join, rename a leave.
 Testováno na vlastní implementaci jednoduchého python serveru kvůli zajištění funkčnosti UDP.
 Klient byl schopen správně reagovat na odpojení serveru, klienta i změnu portu.
 
+#### Testování opakovaného odeslání zprávy
+
+Opět testováno pomocí python serveru, který neodesílal potvrzení o přijetí zprávy.
+A očekával přijetí 4 zpráv (1 + 3 opakované zprávy).
+
 ## Rozšíření
 
 Rozšíření nad rámec zadání bylo především v obecnosti implementace většiny částí programu.
