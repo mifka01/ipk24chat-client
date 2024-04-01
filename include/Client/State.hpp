@@ -1,5 +1,5 @@
 #pragma once
 
 namespace Client {
-enum class State { START, AUTH, OPEN, ERROR, END };
+enum class State { START, AUTH, OPEN, CONFIRM, END };
 }
