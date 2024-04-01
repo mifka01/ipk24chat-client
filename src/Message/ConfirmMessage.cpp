@@ -19,7 +19,9 @@ void ConfirmMessage::accept(MessageVisitor& visitor) {
   visitor.visit(*this);
 }
 
-std::string ConfirmMessage::tcpSerialize() const {}
+std::string ConfirmMessage::tcpSerialize() const {
+  return "";
+}
 
 std::vector<uint8_t> ConfirmMessage::udpSerialize() const {
   std::vector<uint8_t> message;
