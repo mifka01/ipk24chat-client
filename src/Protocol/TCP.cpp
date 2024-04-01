@@ -7,7 +7,6 @@
 #include "Message/ErrMessage.hpp"
 #include "Message/MsgMessage.hpp"
 #include "Message/ReplyMessage.hpp"
-#include "iostream"
 #include "utils.hpp"
 
 namespace Protocol {
@@ -19,8 +18,8 @@ void TCP::send(std::unique_ptr<Message::Message> message) {
 }
 
 std::unique_ptr<Message::Message> TCP::receive() {
-  char buffer[4096];
-  int bytesReceived = recv(client.socket, buffer, 1024, 0);
+  char buffer[BUFFER_SIZE];
+  int bytesReceived = recv(client.socket, buffer, BUFFER_SIZE, 0);
   if (bytesReceived == -1) {
     throw std::runtime_error("Failed to receive message");
   }
@@ -78,56 +77,6 @@ std::unique_ptr<Message::Message> TCP::receive() {
 
 void TCP::setNextState(Client::State state) {
   client.state = state;
-}
-
-bool TCP::processCommand(const std::string& message) {
-  for (const auto& [name, command] : client.commandRegistry.commands) {
-    if (command->match(message)) {
-      command->execute(client.protocol, message, client);
-      return true;
-    }
-  }
-  return false;
-}
-
-void TCP::processInput() {
-  std::string message;
-  std::getline(std::cin, message);
-
-  if (message.empty()) {
-    return;
-  }
-  if (processCommand(message)) {
-    return;
-  }
-
-  if (std::any_of(client.commandRegistry.prefixes.begin(),
-                  client.commandRegistry.prefixes.end(),
-                  [&message](const std::string& prefix) {
-                    return message.starts_with(prefix);
-                  })) {
-    std::cerr << "ERR: trying to process an unknown or otherwise malformed "
-                 "command."
-              << std::endl;
-    return;
-  }
-
-  if (message == "BYE") {
-    client.protocol->send(client.protocol->toMessage(Message::Type::BYE, {}));
-    client.state = Client::State::END;
-    return;
-  }
-
-  if (client.state == Client::State::OPEN) {
-    client.protocol->send(
-        client.protocol->toMessage(Message::Type::MSG, {message}));
-  }
-  std::cerr << "ERR: trying to send a message in non-open state" << std::endl;
-}
-
-void TCP::processReply() {
-  std::unique_ptr<Message::Message> reply = client.protocol->receive();
-  reply->accept(*client.visitor);
 }
 
 void TCP::run() {

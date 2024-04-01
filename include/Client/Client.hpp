@@ -16,19 +16,17 @@ class MessageVisitor;
 
 namespace Client {
 class Client {
+ private:
   const std::string& host;
   const int& port;
   addrinfo* address;
 
   addrinfo* getAddress();
-
   void close();
 
  public:
   Client(const std::string& host, const int& port, const std::string& protocol);
   ~Client();
-
-  void run();
 
   int socket;
   int messagesSent = 1;
@@ -42,6 +40,8 @@ class Client {
   SocketPoller poller;
   std::shared_ptr<Protocol::Protocol> protocol;
   std::unique_ptr<Message::MessageVisitor> visitor;
+
+  void run();
 };
 
 }  // namespace Client

@@ -56,4 +56,56 @@ std::shared_ptr<Protocol> Protocol::fromString(const std::string& protocol,
   }
 }
 
+bool Protocol::processCommand(const std::string& message) {
+  for (const auto& [name, command] : client.commandRegistry.commands) {
+    if (command->match(message)) {
+      command->execute(client.protocol, message, client);
+      return true;
+    }
+  }
+  return false;
+}
+
+void Protocol::processInput() {
+  std::string message;
+  std::getline(std::cin, message);
+  if (message.empty()) {
+    return;
+  }
+
+  if (processCommand(message)) {
+    return;
+  }
+
+  if (std::any_of(client.commandRegistry.prefixes.begin(),
+                  client.commandRegistry.prefixes.end(),
+                  [&message](const std::string& prefix) {
+                    return message.starts_with(prefix);
+                  })) {
+    std::cerr << "ERR: trying to process an unknown or otherwise malformed "
+                 "command."
+              << std::endl;
+    return;
+  }
+
+  if (message == "BYE") {
+    client.protocol->send(client.protocol->toMessage(Message::Type::BYE, {}));
+    client.protocol->setNextState(Client::State::END);
+    return;
+  }
+
+  if (client.state == Client::State::OPEN) {
+    client.protocol->send(
+        client.protocol->toMessage(Message::Type::MSG, {message}));
+    client.protocol->setNextState(Client::State::OPEN);
+    return;
+  }
+
+  std::cerr << "ERR: trying to send a message in non-open state" << std::endl;
+}
+void Protocol::processReply() {
+  std::unique_ptr<Message::Message> reply = client.protocol->receive();
+  reply->accept(*client.visitor);
+}
+
 }  // namespace Protocol

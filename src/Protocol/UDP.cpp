@@ -32,7 +32,7 @@ void UDP::send(std::unique_ptr<Message::Message> message) {
 }
 
 std::unique_ptr<Message::Message> UDP::receive() {
-  char buffer[4096];
+  char buffer[BUFFER_SIZE];
   socklen_t serverAddrLen = sizeof(*client.serverAddr);
   ssize_t received = recvfrom(client.socket, buffer, sizeof(buffer), 0,
                               client.serverAddr, &serverAddrLen);
@@ -92,59 +92,12 @@ std::unique_ptr<Message::Message> UDP::receive() {
       return std::make_unique<Message::ConfirmMessage>(
           Message::ConfirmMessage(messageId));
     }
+    default:
+      break;
   }
   send(toMessage(Message::Type::CONFIRM, {std::to_string(messageId)}));
   send(toMessage(Message::Type::ERR, {"Invalid format of message"}));
   throw std::runtime_error("Invalid format of message");
-}
-
-bool UDP::processCommand(const std::string& message) {
-  for (const auto& [name, command] : client.commandRegistry.commands) {
-    if (command->match(message)) {
-      command->execute(client.protocol, message, client);
-      return true;
-    }
-  }
-  return false;
-}
-
-bool UDP::processInput() {
-  std::string message;
-  std::getline(std::cin, message);
-  if (message.empty()) {
-    return false;
-  }
-
-  if (processCommand(message)) {
-    return true;
-  }
-
-  if (std::any_of(client.commandRegistry.prefixes.begin(),
-                  client.commandRegistry.prefixes.end(),
-                  [&message](const std::string& prefix) {
-                    return message.starts_with(prefix);
-                  })) {
-    std::cerr << "ERR: trying to process an unknown or otherwise malformed "
-                 "command."
-              << std::endl;
-    return false;
-  }
-
-  if (message == "BYE") {
-    client.protocol->send(client.protocol->toMessage(Message::Type::BYE, {}));
-    nextState = Client::State::END;
-    return false;
-  }
-
-  if (client.state == Client::State::OPEN) {
-    client.protocol->send(
-        client.protocol->toMessage(Message::Type::MSG, {message}));
-    nextState = Client::State::OPEN;
-    return true;
-  }
-
-  std::cerr << "ERR: trying to send a message in non-open state" << std::endl;
-  return false;
 }
 
 void UDP::setNextState(Client::State state) {
@@ -185,7 +138,9 @@ void UDP::run() {
   while (true) {
     curRetries = 0;
     if (client.state == Client::State::END) {
-      client.protocol->send(client.protocol->toMessage(Message::Type::BYE, {}));
+      if (lastSentMessage->type != Message::Type::BYE)
+        client.protocol->send(
+            client.protocol->toMessage(Message::Type::BYE, {}));
       break;
     } else if (client.state == Client::State::CONFIRM) {
       while (curRetries < client.retries) {
