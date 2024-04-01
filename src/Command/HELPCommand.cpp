@@ -21,7 +21,7 @@ void HELPCommand::execute(__attribute__((unused))
   std::cout << " /join {ChannelID}" << std::endl;
   std::cout << " /rename {DisplayName}" << std::endl;
   std::cout << " /help" << std::endl;
-  // exit
+  exit(0);
 }
 
 }  // namespace Command

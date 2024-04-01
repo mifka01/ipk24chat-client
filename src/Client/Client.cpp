@@ -3,6 +3,8 @@
  * @author Radim Mifka (xmifka00)
  * @date March 2024
  */
+#include <cstring>
+
 #include "Client/Client.hpp"
 #include "Message/MessageVisitor.hpp"
 #include "Protocol/Type.hpp"
