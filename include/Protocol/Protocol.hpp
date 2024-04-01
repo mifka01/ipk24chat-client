@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <memory>
 #include <string>
+#include "Client/State.hpp"
 #include "Message/Message.hpp"
 #include "Type.hpp"
 
@@ -24,6 +25,8 @@ class Protocol {
   virtual ~Protocol() = default;
 
   virtual void run() = 0;
+
+  virtual void setNextState(Client::State state) = 0;
 
   std::unique_ptr<Message::Message> toMessage(
       const Message::Type message,

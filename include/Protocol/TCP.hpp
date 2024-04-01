@@ -30,6 +30,8 @@ class TCP : public Protocol {
   inline std::string toString() override { return "TCP"; }
   inline Type getType() override { return Type::TCP; }
 
+  void setNextState(Client::State state) override;
+
   void run() override;
 
   void send(std::unique_ptr<Message::Message> message) override;

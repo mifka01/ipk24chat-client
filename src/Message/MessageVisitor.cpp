@@ -34,8 +34,8 @@ void MessageVisitor::visit(ErrMessage& err) {
   client.state = Client::State::END;
 }
 
+void MessageVisitor::visit(__attribute__((unused)) ConfirmMessage& confirm) {}
 void MessageVisitor::visit(__attribute__((unused)) JoinMessage& join) {}
 void MessageVisitor::visit(__attribute__((unused)) AuthMessage& auth) {}
-void MessageVisitor::visit(__attribute__((unused)) ConfirmMessage& auth) {}
 
 }  // namespace Message

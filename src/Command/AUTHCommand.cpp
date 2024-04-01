@@ -23,7 +23,7 @@ void AUTHCommand::execute(std::shared_ptr<Protocol::Protocol> protocol,
   }
   std::vector<std::string> tokens = totokens(message);
   client.displayName = tokens[3];
-  client.state = Client::State::AUTH;
+  client.protocol->setNextState(Client::State::AUTH);
   tokens.erase(tokens.begin());
 
   protocol->send(protocol->toMessage(Message::Type::AUTH, tokens));

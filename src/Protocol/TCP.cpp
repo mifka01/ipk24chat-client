@@ -76,6 +76,10 @@ std::unique_ptr<Message::Message> TCP::receive() {
   throw std::runtime_error("Invalid format of message");
 }
 
+void TCP::setNextState(Client::State state) {
+  client.state = state;
+}
+
 bool TCP::processCommand(const std::string& message) {
   for (const auto& [name, command] : client.commandRegistry.commands) {
     if (command->match(message)) {
