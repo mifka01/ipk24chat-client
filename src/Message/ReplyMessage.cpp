@@ -12,7 +12,7 @@ ReplyMessage::ReplyMessage(const uint16_t messageID,
   id = messageID;
   type = Type::REPLY;
 
-  if (!std::regex_match(content, std::regex(Pattern::content))) {
+  if (!std::regex_match(content, std::regex(Pattern::CONTENT))) {
     throw std::invalid_argument("Invalid format of content");
   }
 }

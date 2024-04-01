@@ -12,13 +12,13 @@ AuthMessage::AuthMessage(const uint16_t messageID,
     : username(username), displayName(displayName), secret(secret) {
   id = messageID;
   type = Type::AUTH;
-  if (!std::regex_match(username, std::regex(Pattern::username))) {
+  if (!std::regex_match(username, std::regex(Pattern::USERNAME))) {
     throw std::invalid_argument("Invalid format of username");
   }
-  if (!std::regex_match(displayName, std::regex(Pattern::displayName))) {
+  if (!std::regex_match(displayName, std::regex(Pattern::DISPLAY_NAME))) {
     throw std::invalid_argument("Invalid format of display name");
   }
-  if (!std::regex_match(secret, std::regex(Pattern::secret))) {
+  if (!std::regex_match(secret, std::regex(Pattern::SECRET))) {
     throw std::invalid_argument("Invalid format of secret");
   }
 }

@@ -12,11 +12,11 @@ JoinMessage::JoinMessage(const uint16_t messageID,
   id = messageID;
   type = Type::JOIN;
 
-  if (!std::regex_match(channelID, std::regex(Pattern::channelID))) {
+  if (!std::regex_match(channelID, std::regex(Pattern::CHANNEL_ID))) {
     throw std::invalid_argument("Invalid format of channel ID");
   }
 
-  if (!std::regex_match(displayName, std::regex(Pattern::displayName))) {
+  if (!std::regex_match(displayName, std::regex(Pattern::DISPLAY_NAME))) {
     throw std::invalid_argument("Invalid format of display name");
   }
 }

@@ -12,11 +12,11 @@ MsgMessage::MsgMessage(const uint16_t messageID,
   id = messageID;
   type = Type::MSG;
 
-  if (!std::regex_match(displayName, std::regex(Pattern::displayName))) {
+  if (!std::regex_match(displayName, std::regex(Pattern::DISPLAY_NAME))) {
     throw std::invalid_argument("Invalid format of display name");
   }
 
-  if (!std::regex_match(content, std::regex(Pattern::content))) {
+  if (!std::regex_match(content, std::regex(Pattern::CONTENT))) {
     throw std::invalid_argument("Invalid format of content");
   }
 }
