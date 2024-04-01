@@ -1,6 +1,5 @@
 #pragma once
 namespace Message {
-
 enum class Type {
   CONFIRM = 0x00,
   REPLY = 0x01,

@@ -1,5 +1,6 @@
-#include "Message/JoinMessage.hpp"
 #include <regex>
+
+#include "Message/JoinMessage.hpp"
 #include "Message/MessageVisitor.hpp"
 #include "utils.hpp"
 

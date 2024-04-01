@@ -1,5 +1,7 @@
 #pragma once
 
 namespace Client {
-enum class State { START, AUTH, OPEN, CONFIRM, END };
-}
+
+enum class State { AUTH, CONFIRM, END, OPEN, START };
+
+} // namespace Client

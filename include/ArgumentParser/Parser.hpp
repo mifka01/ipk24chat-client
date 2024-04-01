@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+
 #include "Argument.hpp"
 #include "Validator.hpp"
 
@@ -14,15 +15,13 @@ namespace ArgumentParser {
 /**
  * @class Parser
  *
- * The `Parser` class is responsible for parsing command-line arguments. It
+ * @brief The `Parser` class is responsible for parsing command-line arguments. It
  * provides methods to add arguments and parse the command-line arguments. The
  * `Parser` class also provides methods to print the usage and help messages.
- */
-/**
- * @brief The Parser class is responsible for parsing command line arguments and
- * storing them in a data structure.
+ *
  */
 class Parser {
+ private:
   Validator validator;
   std::vector<Argument> positional;
   std::vector<Argument> options;

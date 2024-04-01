@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+
 #include "Type.hpp"
 
 namespace ArgumentParser {
@@ -22,8 +23,8 @@ namespace ArgumentParser {
  * choices, and number of arguments.
  *
  */
-
 class Argument {
+ private:
   const std::string name;
   const std::string shortcut;
   const Type type;
@@ -41,6 +42,9 @@ class Argument {
   void validate() const;
 
  public:
+  bool isRequired;
+  bool isPositional;
+
   /**
    * @brief Constructs an Argument object.
    *
@@ -79,9 +83,6 @@ class Argument {
            const std::vector<std::string>& choices = {},
            const int nargs = 1,
            bool required = false);
-
-  bool isRequired;
-  bool isPositional;
 
   /**
    * @brief Gets the name of the argument.

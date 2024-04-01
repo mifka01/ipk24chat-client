@@ -1,5 +1,6 @@
-#include "Message/ByeMessage.hpp"
 #include <vector>
+
+#include "Message/ByeMessage.hpp"
 #include "Message/MessageVisitor.hpp"
 
 namespace Message {

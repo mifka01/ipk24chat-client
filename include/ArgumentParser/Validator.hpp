@@ -7,11 +7,14 @@
 #include <functional>
 #include <limits>
 #include <unordered_map>
+
 #include "Argument.hpp"
 #include "Type.hpp"
 
 namespace ArgumentParser {
 /**
+ * @class Validator
+ *
  * @brief The Validator class provides functionality to validate argument
  * values.
  *
@@ -19,11 +22,8 @@ namespace ArgumentParser {
  * their type and choices. It uses a collection of validators to perform the
  * validation.
  */
-/**
- * @class Validator
- * @brief Class responsible for validating argument values.
- */
 class Validator {
+ private:
   std::unordered_map<Type, std::function<bool(std::string)>> validators;
 
  public:

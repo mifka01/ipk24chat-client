@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <memory>
 #include <string>
+
 #include "Client/State.hpp"
 #include "Message/Message.hpp"
 #include "Type.hpp"

@@ -1,6 +1,7 @@
-#include "Command/HELPCommand.hpp"
 #include <iostream>
 #include <string>
+
+#include "Command/HELPCommand.hpp"
 
 namespace Command {
 

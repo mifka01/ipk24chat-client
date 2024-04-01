@@ -1,5 +1,6 @@
-#include "Message/AuthMessage.hpp"
 #include <regex>
+
+#include "Message/AuthMessage.hpp"
 #include "Message/MessageVisitor.hpp"
 #include "utils.hpp"
 
@@ -31,6 +32,7 @@ std::string AuthMessage::tcpSerialize() const {
   return "AUTH " + username + " AS " + displayName + " USING " + secret +
          Message::CLRF;
 }
+
 std::vector<uint8_t> AuthMessage::udpSerialize() const {
   std::vector<uint8_t> message;
   message.push_back(static_cast<uint8_t>(Type::AUTH));

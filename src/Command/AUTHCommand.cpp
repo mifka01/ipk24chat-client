@@ -1,6 +1,7 @@
-#include "Command/AUTHCommand.hpp"
 #include <iostream>
+
 #include "Client/Client.hpp"
+#include "Command/AUTHCommand.hpp"
 #include "utils.hpp"
 
 namespace Command {

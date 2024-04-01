@@ -1,5 +1,5 @@
-#include <Client/Client.hpp>
-#include <Message/MessageVisitor.hpp>
+#include "Client/Client.hpp"
+#include "Message/MessageVisitor.hpp"
 #include "Protocol/Type.hpp"
 
 namespace Client {
@@ -25,6 +25,15 @@ Client::Client(const std::string& host,
   }
 }
 
+void Client::run() {
+  protocol->run();
+}
+
+Client::~Client() {
+  close();
+  freeaddrinfo(address);
+}
+
 addrinfo* Client::getAddress() {
   addrinfo hints, *addrinfo;
   memset(&hints, 0, sizeof(hints));
@@ -44,12 +53,4 @@ void Client::close() {
   }
 }
 
-void Client::run() {
-  protocol->run();
-}
-
-Client::~Client() {
-  close();
-  freeaddrinfo(address);
-}
 }  // namespace Client

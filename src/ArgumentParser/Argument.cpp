@@ -71,23 +71,18 @@ std::string Argument::getName() const {
   return name;
 }
 
-std::string Argument::getOutputName() const {
-  if (name.substr(0, 2) == "--") {
-    return name.substr(2);
-  }
-  std::string lower = name;
-  transform(name.begin(), name.end(), lower.begin(), ::tolower);
-  return lower;
-}
 std::string Argument::getShortcut() const {
   return shortcut;
 }
+
 std::string Argument::getHelp() const {
   return help;
 }
+
 Type Argument::getType() const {
   return type;
 }
+
 int Argument::getNargs() const {
   return nargs;
 }
@@ -98,5 +93,14 @@ std::vector<std::string> Argument::getChoices() const {
 
 std::string Argument::getDefaultValue() const {
   return defaultValue;
+}
+
+std::string Argument::getOutputName() const {
+  if (name.substr(0, 2) == "--") {
+    return name.substr(2);
+  }
+  std::string lower = name;
+  transform(name.begin(), name.end(), lower.begin(), ::tolower);
+  return lower;
 }
 }  // namespace ArgumentParser

@@ -1,12 +1,20 @@
-#include "Message/MessageVisitor.hpp"
+#include <iostream>
+
 #include "Client/Client.hpp"
 #include "Message/ByeMessage.hpp"
 #include "Message/ErrMessage.hpp"
+#include "Message/MessageVisitor.hpp"
 #include "Message/MsgMessage.hpp"
 #include "Message/ReplyMessage.hpp"
-#include "iostream"
 
 namespace Message {
+
+void MessageVisitor::visit(ErrMessage& err) {
+  std::cerr << "ERR FROM " << err.displayName << ": " << err.content << "\n";
+  client.state = Client::State::END;
+}
+
+void MessageVisitor::visit(AuthMessage& auth) {}
 
 void MessageVisitor::visit(ReplyMessage& reply) {
   if (reply.success) {
@@ -24,18 +32,13 @@ void MessageVisitor::visit(MsgMessage& msg) {
   std::cout << msg.displayName << ": " << msg.content << "\n";
 }
 
-void MessageVisitor::visit(__attribute__((unused)) ByeMessage& bye) {
+void MessageVisitor::visit(ByeMessage& bye) {
   std::cout << "BYE\n";
   client.state = Client::State::END;
 }
 
-void MessageVisitor::visit(ErrMessage& err) {
-  std::cerr << "ERR FROM " << err.displayName << ": " << err.content << "\n";
-  client.state = Client::State::END;
-}
+void MessageVisitor::visit(JoinMessage& join) {}
 
-void MessageVisitor::visit(__attribute__((unused)) ConfirmMessage& confirm) {}
-void MessageVisitor::visit(__attribute__((unused)) JoinMessage& join) {}
-void MessageVisitor::visit(__attribute__((unused)) AuthMessage& auth) {}
+void MessageVisitor::visit(ConfirmMessage& confirm) {}
 
 }  // namespace Message

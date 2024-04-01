@@ -4,17 +4,21 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <Client/SocketPoller.hpp>
-#include <Command/CommandRegistry.hpp>
-#include <Protocol/Protocol.hpp>
 #include <string>
+
+#include "Client/SocketPoller.hpp"
 #include "Client/State.hpp"
+#include "Command/CommandRegistry.hpp"
+#include "Protocol/Protocol.hpp"
 
 namespace Message {
+
 class MessageVisitor;
-}
+
+} // namespace Message
 
 namespace Client {
+
 class Client {
  private:
   const std::string& host;
@@ -45,4 +49,3 @@ class Client {
 };
 
 }  // namespace Client
-//

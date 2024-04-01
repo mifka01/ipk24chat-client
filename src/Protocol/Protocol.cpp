@@ -1,6 +1,7 @@
-#include "Protocol/Protocol.hpp"
+#include <iostream>
 #include <string>
 #include <vector>
+
 #include "Client/Client.hpp"
 #include "Message/AuthMessage.hpp"
 #include "Message/ByeMessage.hpp"
@@ -8,6 +9,7 @@
 #include "Message/ErrMessage.hpp"
 #include "Message/JoinMessage.hpp"
 #include "Message/MsgMessage.hpp"
+#include "Protocol/Protocol.hpp"
 #include "Protocol/TCP.hpp"
 #include "Protocol/UDP.hpp"
 

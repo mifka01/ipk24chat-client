@@ -9,7 +9,9 @@
 #include <vector>
 
 namespace Client {
+
 class SocketPoller {
+ private:
   std::vector<pollfd> fds_;
 
  public:

@@ -1,5 +1,6 @@
-#include "Message/ReplyMessage.hpp"
 #include <regex>
+
+#include "Message/ReplyMessage.hpp"
 #include "utils.hpp"
 
 namespace Message {

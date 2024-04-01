@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+
 #include "Message.hpp"
 
 namespace Message {
@@ -14,7 +15,6 @@ class ErrMessage : public Message {
              const std::string& content);
 
   void accept(MessageVisitor& visitor) override;
-
   std::string tcpSerialize() const override;
   std::vector<uint8_t> udpSerialize() const override;
 };

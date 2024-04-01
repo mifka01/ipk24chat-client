@@ -1,7 +1,8 @@
-#include "Command/JOINCommand.hpp"
 #include <iostream>
-#include "Client/Client.hpp"
 #include "utils.hpp"
+
+#include "Client/Client.hpp"
+#include "Command/JOINCommand.hpp"
 
 namespace Command {
 

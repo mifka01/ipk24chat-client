@@ -1,10 +1,10 @@
 #pragma once
 #include <string>
+
 #include "Message.hpp"
 #include "MessageVisitor.hpp"
 
 namespace Message {
-
 class ReplyMessage : public Message {
  public:
   bool success;
@@ -17,7 +17,6 @@ class ReplyMessage : public Message {
                const uint16_t refMessageID = 0);
 
   void accept(MessageVisitor& visitor) override;
-
   std::string tcpSerialize() const override;
   std::vector<uint8_t> udpSerialize() const override;
 };

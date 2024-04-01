@@ -1,5 +1,6 @@
-#include "Message/ConfirmMessage.hpp"
 #include <vector>
+
+#include "Message/ConfirmMessage.hpp"
 #include "Message/MessageVisitor.hpp"
 
 namespace Message {

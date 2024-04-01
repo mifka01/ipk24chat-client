@@ -3,18 +3,21 @@
  * @author Radim Mifka (xmifka00)
  * @date March 2024
  */
-#include "ArgumentParser/Parser.hpp"
 #include <iomanip>
 #include <iostream>
 #include <string>
 #include <unordered_map>
 
+#include "ArgumentParser/Parser.hpp"
+
 namespace ArgumentParser {
+
 Parser::Parser(std::string programName) : programName(programName) {
   flags.push_back(Argument("--help", "-h", Type::HELP,
                            "Prints program help output and exits", "", {}, 0,
                            false));
 }
+
 std::unordered_map<std::string, std::string> Parser::parse(int argc,
                                                            char* argv[]) {
   std::vector<std::string> args(argv + 1, argv + argc);
@@ -112,7 +115,6 @@ void Parser::parseFlags(
   }
 }
 
-// FLAG
 void Parser::addArgument(const std::string& name,
                          const std::string& shortcut,
                          const std::string& help,
@@ -121,7 +123,6 @@ void Parser::addArgument(const std::string& name,
       Argument(name, shortcut, Type::FLAG, help, "", {}, 0, required));
 }
 
-// POSITIONAL
 void Parser::addArgument(const std::string& name,
                          const Type& type,
                          const std::string& help,
@@ -138,7 +139,6 @@ void Parser::addArgument(const std::string& name,
   positional.push_back(Argument(name, type, help, choices, nargs));
 }
 
-// OPTION
 void Parser::addArgument(const std::string& name,
                          const std::string& shortcut,
                          const Type& type,
@@ -186,6 +186,7 @@ void Parser::printUsage() {
   }
   std::cout << std::endl;
 }
+
 void Parser::printHelp() {
   printUsage();
   std::cout << std::endl;

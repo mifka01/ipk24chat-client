@@ -12,16 +12,16 @@ namespace ArgumentParser {
  * function to convert the enumeration value to its string representation.
  */
 enum class Type {
-  FLAG,
+  BOOL,
   UINT8,
-  UINT16,
   INT8,
+  UINT16,
   INT16,
   FLOAT,
   DOUBLE,
   STRING,
-  BOOL,
   HOST,
+  FLAG,
   HELP,
 };
 

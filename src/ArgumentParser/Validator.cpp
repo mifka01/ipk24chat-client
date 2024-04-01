@@ -3,8 +3,9 @@
  * @author Radim Mifka (xmifka00)
  * @date March 2024
  */
-#include "ArgumentParser/Validator.hpp"
 #include <regex>
+
+#include "ArgumentParser/Validator.hpp"
 
 namespace ArgumentParser {
 

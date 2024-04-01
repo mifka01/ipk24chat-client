@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
+
 #include "Client/State.hpp"
 #include "Message/Message.hpp"
-
 #include "Protocol.hpp"
 
 namespace Protocol {

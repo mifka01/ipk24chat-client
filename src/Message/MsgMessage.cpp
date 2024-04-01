@@ -1,6 +1,7 @@
-#include "Message/MsgMessage.hpp"
 #include <regex>
+
 #include "Message/MessageVisitor.hpp"
+#include "Message/MsgMessage.hpp"
 #include "utils.hpp"
 
 namespace Message {
