@@ -93,6 +93,7 @@ bool TCP::processCommand(const std::string& message) {
 void TCP::processInput() {
   std::string message;
   std::getline(std::cin, message);
+
   if (message.empty()) {
     return;
   }
@@ -106,7 +107,8 @@ void TCP::processInput() {
                     return message.starts_with(prefix);
                   })) {
     std::cerr << "ERR: trying to process an unknown or otherwise malformed "
-                 "command.\n";
+                 "command."
+              << std::endl;
     return;
   }
 
@@ -116,8 +118,11 @@ void TCP::processInput() {
     return;
   }
 
-  client.protocol->send(
-      client.protocol->toMessage(Message::Type::MSG, {message}));
+  if (client.state == Client::State::OPEN) {
+    client.protocol->send(
+        client.protocol->toMessage(Message::Type::MSG, {message}));
+  }
+  std::cerr << "ERR: trying to send a message in non-open state" << std::endl;
 }
 
 void TCP::processReply() {
@@ -130,34 +135,10 @@ void TCP::run() {
   client.poller.addSocket(client.socket, POLLIN);
 
   while (true) {
-    if (client.state == Client::State::START) {
-      int events = client.poller.poll();
-      if (events < 0) {
-        throw std::runtime_error("Failed to poll");
-      }
-      if (client.poller.hasEvent(0, POLLIN)) {
-        std::string message;
-        std::getline(std::cin, message);
-        if (message == "BYE") {
-          client.state = Client::State::END;
-          continue;
-        } else if (!message.empty() && !processCommand(message)) {
-          std::cerr << "ERR: trying to send a message in non-open state\n";
-        }
-      }
-      if (client.poller.hasEvent(1, POLLIN)) {
-        processReply();
-      }
-    } else if (client.state == Client::State::AUTH) {
-      int events = client.poller.poll();
-      if (events < 0) {
-        throw std::runtime_error("Failed to poll");
-      }
-
-      if (client.poller.hasEvent(1, POLLIN)) {
-        processReply();
-      }
-    } else if (client.state == Client::State::OPEN) {
+    if (client.state == Client::State::END) {
+      client.protocol->send(client.protocol->toMessage(Message::Type::BYE, {}));
+      break;
+    } else {
       int events = client.poller.poll();
       if (events < 0) {
         throw std::runtime_error("Failed to poll");
@@ -169,9 +150,6 @@ void TCP::run() {
       if (client.poller.hasEvent(1, POLLIN)) {
         processReply();
       }
-    } else if (client.state == Client::State::END) {
-      client.protocol->send(client.protocol->toMessage(Message::Type::BYE, {}));
-      break;
     }
   }
 }
