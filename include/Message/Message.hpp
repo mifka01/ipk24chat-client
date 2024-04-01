@@ -11,7 +11,7 @@ class MessageVisitor;
 
 class Message {
  protected:
-  const std::string clrf = "\r\n";
+  const std::string CLRF = "\r\n";
 
  public:
   uint16_t id = 0;

@@ -10,7 +10,7 @@ ByeMessage::ByeMessage(const uint16_t messageID) {
 }
 
 std::string ByeMessage::tcpSerialize() const {
-  return "BYE" + Message::clrf;
+  return "BYE" + Message::CLRF;
 }
 
 std::vector<uint8_t> ByeMessage::udpSerialize() const {

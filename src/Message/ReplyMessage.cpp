@@ -23,7 +23,7 @@ void ReplyMessage::accept(MessageVisitor& visitor) {
 
 std::string ReplyMessage::tcpSerialize() const {
   std::string status = success ? "OK" : "NOK";
-  return "REPLY " + status + " IS " + content + Message::clrf;
+  return "REPLY " + status + " IS " + content + Message::CLRF;
 }
 
 std::vector<uint8_t> ReplyMessage::udpSerialize() const {

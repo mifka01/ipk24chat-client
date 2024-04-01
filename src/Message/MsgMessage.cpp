@@ -26,7 +26,7 @@ void MsgMessage::accept(MessageVisitor& visitor) {
 }
 
 std::string MsgMessage::tcpSerialize() const {
-  return "MSG FROM " + displayName + " IS " + content + Message::clrf;
+  return "MSG FROM " + displayName + " IS " + content + Message::CLRF;
 }
 
 std::vector<uint8_t> MsgMessage::udpSerialize() const {
