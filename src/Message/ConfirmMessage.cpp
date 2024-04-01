@@ -1,3 +1,8 @@
+/**
+ * @file src/Message/ConfirmMessage.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include <vector>
 
 #include "Message/ConfirmMessage.hpp"

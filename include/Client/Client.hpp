@@ -1,3 +1,8 @@
+/**
+ * @file include/Client/Client.hpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #pragma once
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -15,21 +20,45 @@ namespace Message {
 
 class MessageVisitor;
 
-} // namespace Message
+}  // namespace Message
 
 namespace Client {
-
+/**
+ * @class Client
+ * @brief Represents a client for a chat application.
+ *
+ * The Client class provides functionality for connecting to a chat server,
+ * sending and receiving messages, and managing the client's state.
+ */
 class Client {
  private:
   const std::string& host;
   const int& port;
   addrinfo* address;
 
+  /**
+   * @brief Retrieves the address information of the chat server.
+   * @return The address information of the chat server.
+   */
   addrinfo* getAddress();
+
+  /**
+   * @brief Closes the client's socket connection.
+   */
   void close();
 
  public:
+  /**
+   * @brief Constructs a new Client object.
+   * @param host The host address of the chat server.
+   * @param port The port number of the chat server.
+   * @param protocol The protocol to be used for communication.
+   */
   Client(const std::string& host, const int& port, const std::string& protocol);
+
+  /**
+   * @brief Destroys the Client object and cleans up any resources.
+   */
   ~Client();
 
   int socket;
@@ -45,6 +74,9 @@ class Client {
   std::shared_ptr<Protocol::Protocol> protocol;
   std::unique_ptr<Message::MessageVisitor> visitor;
 
+  /**
+   * @brief Runs the client and starts the chat application.
+   */
   void run();
 };
 

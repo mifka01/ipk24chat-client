@@ -1,3 +1,8 @@
+/**
+ * @file src/Message/MsgMessage.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include <regex>
 
 #include "Message/MessageVisitor.hpp"

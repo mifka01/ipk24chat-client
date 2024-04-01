@@ -1,3 +1,8 @@
+/**
+ * @file src/Message/MessageVisitor.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include <iostream>
 
 #include "Client/Client.hpp"
@@ -13,8 +18,6 @@ void MessageVisitor::visit(ErrMessage& err) {
   std::cerr << "ERR FROM " << err.displayName << ": " << err.content << "\n";
   client.state = Client::State::END;
 }
-
-void MessageVisitor::visit(AuthMessage& auth) {}
 
 void MessageVisitor::visit(ReplyMessage& reply) {
   if (reply.success) {
@@ -32,13 +35,15 @@ void MessageVisitor::visit(MsgMessage& msg) {
   std::cout << msg.displayName << ": " << msg.content << "\n";
 }
 
-void MessageVisitor::visit(ByeMessage& bye) {
+void MessageVisitor::visit(__attribute__((unused)) ByeMessage& bye) {
   std::cout << "BYE\n";
   client.state = Client::State::END;
 }
 
-void MessageVisitor::visit(JoinMessage& join) {}
+void MessageVisitor::visit(__attribute__((unused)) JoinMessage& join){};
 
-void MessageVisitor::visit(ConfirmMessage& confirm) {}
+void MessageVisitor::visit(__attribute__((unused)) ConfirmMessage& confirm){};
+
+void MessageVisitor::visit(__attribute__((unused)) AuthMessage& auth){};
 
 }  // namespace Message

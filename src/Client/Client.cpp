@@ -1,3 +1,8 @@
+/**
+ * @file src/Client/Client.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include "Client/Client.hpp"
 #include "Message/MessageVisitor.hpp"
 #include "Protocol/Type.hpp"

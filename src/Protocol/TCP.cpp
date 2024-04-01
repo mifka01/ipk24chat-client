@@ -1,3 +1,8 @@
+/**
+ * @file src/Protocol/TCP.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include "Protocol/TCP.hpp"
 #include <unistd.h>
 #include <regex>

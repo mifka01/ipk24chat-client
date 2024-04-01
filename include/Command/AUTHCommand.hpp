@@ -1,9 +1,21 @@
+/**
+ * @file include/Command/AUTHCommand.hpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #pragma once
 #include "Command/Command.hpp"
 
 namespace Command {
 
 class AUTHCommand : public Command {
+  /**
+   * @class AUTHCommand
+   * @brief Represents the AUTH command.
+   *
+   * The AUTH command is used to authenticate a client with the chat server.
+   */
+
  public:
   AUTHCommand();
 

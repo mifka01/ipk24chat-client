@@ -1,3 +1,8 @@
+/**
+ * @file src/Client/SocketPoller.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include "Client/SocketPoller.hpp"
 
 namespace Client {

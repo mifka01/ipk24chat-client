@@ -4,7 +4,6 @@
  * @date March 2024
  */
 #pragma once
-
 #include <algorithm>
 #include <stdexcept>
 #include <string>

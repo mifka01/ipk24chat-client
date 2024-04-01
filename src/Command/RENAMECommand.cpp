@@ -1,3 +1,8 @@
+/**
+ * @file src/Command/RENAMECommand.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include "Command/RENAMECommand.hpp"
 #include "Client/Client.hpp"
 #include "utils.hpp"

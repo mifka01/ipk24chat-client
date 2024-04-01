@@ -1,3 +1,8 @@
+/**
+ * @file src/Command/AUTHCommand.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include <iostream>
 
 #include "Client/Client.hpp"

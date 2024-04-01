@@ -1,8 +1,20 @@
+/**
+ * @file include/Message/Pattern.hpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #pragma once
 #include <string>
 
 namespace Message {
 
+/**
+ * @class Pattern
+ * @brief Represents the patterns used in the messages.
+ *
+ * The Pattern class provides functionality for defining the patterns used in
+ * the messages.
+ */
 class Pattern {
  public:
   static const std::string USERNAME;

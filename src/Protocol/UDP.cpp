@@ -1,3 +1,8 @@
+/**
+ * @file src/Protocol/UDP.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include "Protocol/UDP.hpp"
 #include <iostream>
 #include <string>

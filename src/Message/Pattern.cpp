@@ -1,3 +1,8 @@
+/**
+ * @file src/Message/Pattern.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include "Message/Pattern.hpp"
 
 namespace Message {

@@ -1,3 +1,8 @@
+/**
+ * @file src/Message/ReplyMessage.cpp
+ * @author Radim Mifka (xmifka00)
+ * @date March 2024
+ */
 #include <regex>
 
 #include "Message/ReplyMessage.hpp"
