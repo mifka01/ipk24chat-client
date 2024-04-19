@@ -62,7 +62,7 @@ class Client {
   ~Client();
 
   int socket;
-  int messagesSent = 1;
+  int messagesSent = 0;
   sockaddr* serverAddr;
   std::string displayName = "";
   State state = State::START;
