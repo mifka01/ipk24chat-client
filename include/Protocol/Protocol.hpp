@@ -33,6 +33,7 @@ class Protocol {
   Client::Client& client;
 
  public:
+  std::unique_ptr<Message::Message> lastSentMessage;
   /**
    * @brief Constructs a new Protocol object.
    * @param client The client to use the protocol for.

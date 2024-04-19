@@ -20,6 +20,7 @@ void TCP::send(std::unique_ptr<Message::Message> message) {
   std::string msg = message->tcpSerialize();
   ::send(client.socket, msg.c_str(), msg.size(), 0);
   client.messagesSent++;
+  lastSentMessage = std::move(message);
 }
 
 std::unique_ptr<Message::Message> TCP::receive() {
@@ -90,7 +91,10 @@ void TCP::run() {
 
   while (true) {
     if (client.state == Client::State::END) {
-      client.protocol->send(client.protocol->toMessage(Message::Type::BYE, {}));
+      if (lastSentMessage->type != Message::Type::BYE) {
+        client.protocol->send(
+            client.protocol->toMessage(Message::Type::BYE, {}));
+      }
       break;
     } else {
       int events = client.poller.poll();

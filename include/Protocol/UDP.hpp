@@ -19,7 +19,6 @@ namespace Protocol {
  */
 class UDP : public Protocol {
  protected:
-  std::unique_ptr<Message::Message> lastSentMessage;
   Client::State nextState;
   Client::State lastState = Client::State::START;
   std::vector<uint16_t> receivedMessages;
