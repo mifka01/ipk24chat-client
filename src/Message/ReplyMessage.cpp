@@ -35,11 +35,13 @@ std::string ReplyMessage::tcpSerialize() const {
 std::vector<uint8_t> ReplyMessage::udpSerialize() const {
   std::vector<uint8_t> message;
   message.push_back(static_cast<uint8_t>(Type::REPLY));
-  message.push_back(static_cast<uint8_t>(id));
+  uint16_t id = htons(this->id);
   message.push_back(static_cast<uint8_t>(id >> 8));
+  message.push_back(static_cast<uint8_t>(id));
   message.push_back(success ? 1 : 0);
-  message.push_back(static_cast<uint8_t>(refMessageID));
-  message.push_back(static_cast<uint8_t>(refMessageID >> 8));
+  uint16_t refid = htons(this->refMessageID);
+  message.push_back(static_cast<uint8_t>(refid >> 8));
+  message.push_back(static_cast<uint8_t>(refid));
   addBytes(message, content);
   return message;
 }

@@ -38,8 +38,9 @@ std::string ErrMessage::tcpSerialize() const {
 std::vector<uint8_t> ErrMessage::udpSerialize() const {
   std::vector<uint8_t> message;
   message.push_back(static_cast<uint8_t>(Type::ERR));
-  message.push_back(static_cast<uint8_t>(id));
+  uint16_t id = htons(this->id);
   message.push_back(static_cast<uint8_t>(id >> 8));
+  message.push_back(static_cast<uint8_t>(id));
   addBytes(message, displayName);
   addBytes(message, content);
   return message;

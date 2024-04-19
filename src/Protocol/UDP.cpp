@@ -52,7 +52,7 @@ std::unique_ptr<Message::Message> UDP::receive() {
 
   Message::Type type =
       static_cast<Message::Type>(static_cast<unsigned char>(buffer[0]));
-  uint16_t messageId = buffer[1] | (buffer[2] << 8);
+  uint16_t messageId = ntohs((buffer[1] << 8) | buffer[2]);
 
   switch (type) {
     case Message::Type::ERR: {
@@ -70,7 +70,7 @@ std::unique_ptr<Message::Message> UDP::receive() {
     }
     case Message::Type::REPLY: {
       uint8_t result = buffer[3];
-      uint16_t refMessageId = buffer[4] | (buffer[5] << 8);
+      uint16_t refMessageId = buffer[4] << 8 | buffer[5];
       char* messageContents = buffer + 6;
 
       return std::make_unique<Message::ReplyMessage>(Message::ReplyMessage(
@@ -114,12 +114,15 @@ void UDP::processReply() {
   auto it = std::find(std::begin(receivedMessages), std::end(receivedMessages),
                       reply->id);
 
-  if (it != std::end(receivedMessages)) {
+  if (it != std::end(receivedMessages) &&
+      reply->type != Message::Type::CONFIRM) {
     send(toMessage(Message::Type::CONFIRM, {std::to_string(reply->id)}));
     return;
   }
 
-  receivedMessages.push_back(reply->id);
+  if (reply->type != Message::Type::CONFIRM) {
+    receivedMessages.push_back(reply->id);
+  }
 
   if (reply->type == Message::Type::CONFIRM) {
     confirm(reply->id);
@@ -143,9 +146,10 @@ void UDP::run() {
   while (true) {
     curRetries = 0;
     if (client.state == Client::State::END) {
-      if (lastSentMessage->type != Message::Type::BYE)
+      if (lastSentMessage->type != Message::Type::BYE) {
         client.protocol->send(
             client.protocol->toMessage(Message::Type::BYE, {}));
+      }
       break;
     } else if (client.state == Client::State::CONFIRM) {
       while (curRetries < client.retries) {

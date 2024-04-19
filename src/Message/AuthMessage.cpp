@@ -41,8 +41,9 @@ std::string AuthMessage::tcpSerialize() const {
 std::vector<uint8_t> AuthMessage::udpSerialize() const {
   std::vector<uint8_t> message;
   message.push_back(static_cast<uint8_t>(Type::AUTH));
-  message.push_back(static_cast<uint8_t>(id));
+  uint16_t id = htons(this->id);
   message.push_back(static_cast<uint8_t>(id >> 8));
+  message.push_back(static_cast<uint8_t>(id));
 
   addBytes(message, username);
   addBytes(message, displayName);

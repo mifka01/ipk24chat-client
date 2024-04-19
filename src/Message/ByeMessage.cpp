@@ -22,8 +22,9 @@ std::string ByeMessage::tcpSerialize() const {
 std::vector<uint8_t> ByeMessage::udpSerialize() const {
   std::vector<uint8_t> message;
   message.push_back(static_cast<uint8_t>(Type::BYE));
-  message.push_back(static_cast<uint8_t>(id));
+  uint16_t id = htons(this->id);
   message.push_back(static_cast<uint8_t>(id >> 8));
+  message.push_back(static_cast<uint8_t>(id));
   return message;
 }
 
