@@ -3,15 +3,19 @@
  * @author Radim Mifka (xmifka00)
  * @date March 2024
  */
-#include <iostream>
 #include "Client/Client.hpp"
-#include "Command/AUTHCommand.hpp"
-#include "Command/HELPCommand.hpp"
-#include "Command/JOINCommand.hpp"
-#include "Command/RENAMECommand.hpp"
 #include "arguments.hpp"
+#include <algorithm>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <unordered_map>
 
-int main(int argc, char* argv[]) {
+#include "Protocol/TCP.hpp"
+#include "Protocol/UDP.hpp"
+
+int main(int argc, char *argv[]) {
   try {
     std::unordered_map<std::string, std::string> args =
         parse_arguments(argc, argv);
@@ -19,25 +23,26 @@ int main(int argc, char* argv[]) {
     std::string protocol = args["transport"];
     transform(protocol.begin(), protocol.end(), protocol.begin(), ::toupper);
 
-    Client::Client client(args["server"], std::stoi(args["port"]), protocol);
+    ServerInfo server{args["server"], std::stoi(args["port"])};
 
-    client.commandRegistry.add("AUTH",
-                               std::make_unique<Command::AUTHCommand>());
-    client.commandRegistry.add("JOIN",
-                               std::make_unique<Command::JOINCommand>());
-    client.commandRegistry.add("RENAME",
-                               std::make_unique<Command::RENAMECommand>());
-    client.commandRegistry.add("HELP",
-                               std::make_unique<Command::HELPCommand>());
+    if (protocol == "TCP") {
+      TCP tcp;
+      Client client = Client(server, tcp);
+      client.run();
+    } else if (protocol == "UDP") {
+      UDP udp;
+      Client client = Client(server, udp);
+      client.run();
+    } else {
+      throw std::invalid_argument("Invalid transport protocol.");
+    }
 
-    client.timeout = std::stoi(args["timeout"]);
-    client.retries = std::stoi(args["retries"]);
-    client.run();
+    // client.retries = std::stoi(args["retries"]);
 
-  } catch (std::invalid_argument& e) {
+  } catch (std::invalid_argument &e) {
     std::cerr << "ERR: " << e.what() << std::endl;
     return 1;
-  } catch (std::runtime_error& e) {
+  } catch (std::runtime_error &e) {
     std::cerr << "ERR: " << e.what() << std::endl;
     return 1;
   }
