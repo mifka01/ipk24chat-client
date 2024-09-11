@@ -5,6 +5,9 @@
  */
 #pragma once
 
+#include "Message/Message.hpp"
+#include <netdb.h>
+
 /**
  * @class Protocol
  * @brief Represents the protocol used in the communication.
@@ -14,8 +17,9 @@
  */
 class Protocol {
 public:
-  int port = 0;
-  virtual void init() = 0;
-  virtual void send() const = 0;
-  virtual void recieve() const = 0;
+  virtual void init(int socket, addrinfo *addrinfo) = 0;
+  virtual void send(int socket, const Message &message) const = 0;
+  virtual void receive() const = 0;
+
+  virtual int getSocketType() const = 0;
 };

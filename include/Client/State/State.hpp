@@ -11,4 +11,8 @@ protected:
 
 public:
   State(Client &client) : client(client) {}
+
+  virtual void run() = 0;
+
+  virtual void handleError(const ErrMessage &error);
 };
