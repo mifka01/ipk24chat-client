@@ -4,15 +4,18 @@
  * @date March 2024
  */
 #include "Protocol/UDP.hpp"
+#include <netdb.h>
 
-void UDP::init() {
+void UDP::init(int socket, addrinfo *addrinfo) {
   // Initialize the UDP protocol.
 }
 
-void UDP::send() const {
-  // Send data using the UDP protocol.
+void UDP::send(int socket, const Message &message) const {
+  // Send data using the TCP protocol.
 }
 
-void UDP::recieve() const {
+void UDP::receive() const {
   // Recieve data using the UDP protocol.
 }
+
+int UDP::getSocketType() const { return SOCK_DGRAM; }

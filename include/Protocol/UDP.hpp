@@ -15,7 +15,9 @@
 class UDP : public Protocol {
 
 public:
-  void init() override;
-  void send() const override;
-  void recieve() const override;
+  void init(int socket, addrinfo *addrinfo) override;
+  void send(int socket, const Message &message) const override;
+  void receive() const override;
+
+  int getSocketType() const override;
 };
