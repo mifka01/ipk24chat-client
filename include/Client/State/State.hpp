@@ -34,7 +34,7 @@ public:
 
   virtual void onEnter() {}
 
-  virtual void handleReplyMessage(const ReplyMessage &message) {}
-  virtual void handleErrMessage(const ErrMessage &message) {}
-  virtual void handleByeMessage(const ByeMessage &message) {}
+  virtual void handleReplyMessage(const ReplyMessage &message);
+  virtual void handleErrMessage(const ErrMessage &message);
+  virtual void handleByeMessage(const ByeMessage &message);
 };

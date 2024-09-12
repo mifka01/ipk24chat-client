@@ -10,12 +10,16 @@ void OpenState::handleInput() {
   }
 }
 
-void OpenState::handleReplyMessage(const ReplyMessage &message) {
-  if (message.success) {
-    client.changeState(std::make_unique<OpenState>(client));
-  }
-}
-
 void OpenState::handleResponse() {
   std::unique_ptr<Message> response = client.receive();
+
+  if (response == nullptr) {
+    return;
+  }
+
+  auto converter = messageConverters.find(response->type);
+  if (converter == messageConverters.end()) {
+    return;
+  }
+  converter->second(*response);
 }
