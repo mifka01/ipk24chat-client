@@ -1,13 +1,16 @@
 #pragma once
-#include "Message/Message.hpp"
+#include "Message/ResponseMessage.hpp"
 #include <string>
 
-class ErrMessage : public Message {
+class ErrMessage : public ResponseMessage {
 
 public:
-  const std::string username;
+  const std::string displayName;
   const std::string content;
 
-  ErrMessage(const std::string &username, const std::string &content)
-      : Message(MessageType::ERR), username(username), content(content) {}
+  ErrMessage(const std::string &displayName, const std::string &content)
+      : ResponseMessage(MessageType::ERR), displayName(displayName),
+        content(content) {}
+
+  std::string toString() const override;
 };

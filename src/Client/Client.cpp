@@ -1,6 +1,7 @@
 #include "Client/Client.hpp"
 #include "Client/State/StartState.hpp"
 #include <cstring>
+#include <iostream>
 #include <stdexcept>
 #include <unistd.h>
 
@@ -24,7 +25,6 @@ Client::Client(ServerInfo &server, Protocol &protocol)
 
 void Client::changeState(std::unique_ptr<State> newState) {
   state = std::move(newState);
-  run();
 }
 
 Client::~Client() {
@@ -34,30 +34,40 @@ Client::~Client() {
   freeaddrinfo(addrinfo);
 }
 
-void Client::handleError(const ErrMessage &error) { state->handleError(error); }
-
 void Client::send(const Message &message) const {
   protocol.send(socket, message);
 }
 
+const std::unique_ptr<Message> Client::receive() {
+  return protocol.receive(socket);
+}
+
 void Client::run() {
+  isRunning = true;
 
   while (true) {
+    state->onEnter();
+    if (!isRunning) {
+      break;
+    }
+
     int events = poller.poll();
 
     if (events < 0) {
       throw std::runtime_error("Failed to poll");
     }
 
-    if (poller.hasEvent(socket, POLLIN)) {
-      // state->processOutput();
+    if (poller.hasEvent(1, POLLIN)) {
+      state->handleResponse();
     }
 
     if (poller.hasEvent(0, POLLIN)) {
-      state->processInput();
+      state->handleInput();
     }
   }
 }
+
+void Client::disconnect() { isRunning = false; }
 
 addrinfo *Client::getAddrInfo() const {
   struct addrinfo hints, *addrinfo;
@@ -73,6 +83,10 @@ addrinfo *Client::getAddrInfo() const {
 }
 
 void Client::setDisplayName(const std::string &displayName) {
+  if (displayName.empty()) {
+    this->displayName = nullptr;
+    return;
+  }
   this->displayName = std::make_unique<std::string>(displayName);
 }
 
