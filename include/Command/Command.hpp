@@ -22,7 +22,6 @@ protected:
   Client &client;
   const std::string name;
 
-  static constexpr const char *NAME_REGEX = "[a-zA-Z0-9_\\-]+";
   static constexpr const char *PREFIX = "/";
   static constexpr const char *WHITESPACE_REGEX = "[\\s]*";
   static constexpr const char *SPACE_REGEX = "[ ]+";
