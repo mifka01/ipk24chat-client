@@ -40,7 +40,24 @@ void Client::send(const Message &message) const {
   protocol.send(socket, message);
 }
 
-void Client::run() { state->run(); }
+void Client::run() {
+
+  while (true) {
+    int events = poller.poll();
+
+    if (events < 0) {
+      throw std::runtime_error("Failed to poll");
+    }
+
+    if (poller.hasEvent(socket, POLLIN)) {
+      // state->processOutput();
+    }
+
+    if (poller.hasEvent(0, POLLIN)) {
+      state->processInput();
+    }
+  }
+}
 
 addrinfo *Client::getAddrInfo() const {
   struct addrinfo hints, *addrinfo;

@@ -1,3 +1,4 @@
 #include "Client/State/AuthState.hpp"
+#include <iostream>
 
-void AuthState::run() {}
+void AuthState::processInput() {}

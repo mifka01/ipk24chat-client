@@ -1,3 +1,4 @@
+#pragma once
 #include "Message/Message.hpp"
 #include <string>
 
@@ -10,5 +11,6 @@ public:
 
   AuthMessage(const std::string username, const std::string displayName,
               const std::string secret)
-      : username(username), displayName(displayName), secret(secret) {}
+      : Message(MessageType::AUTH), username(username),
+        displayName(displayName), secret(secret) {}
 };
