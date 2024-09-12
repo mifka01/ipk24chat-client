@@ -29,6 +29,7 @@ private:
   struct addrinfo *addrinfo;
   int socket;
   std::unique_ptr<std::string> displayName = nullptr;
+  std::string channelId = "general";
 
   bool isRunning = false;
 
@@ -50,6 +51,12 @@ public:
 
   void disconnect();
 
+  void error(const std::string &message) const;
+
   void setDisplayName(const std::string &displayName);
   const std::string &getDisplayName() const;
+
+  void setChannelId(const std::string &channelId);
+
+  const std::string &getChannelId() const;
 };

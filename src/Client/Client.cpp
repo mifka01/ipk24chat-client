@@ -69,6 +69,10 @@ void Client::run() {
 
 void Client::disconnect() { isRunning = false; }
 
+void Client::error(const std::string &message) const {
+  std::cerr << "ERR: " << message << std::endl;
+}
+
 addrinfo *Client::getAddrInfo() const {
   struct addrinfo hints, *addrinfo;
   memset(&hints, 0, sizeof(hints));
@@ -91,3 +95,9 @@ void Client::setDisplayName(const std::string &displayName) {
 }
 
 const std::string &Client::getDisplayName() const { return *displayName; }
+
+void Client::setChannelId(const std::string &channelId) {
+  this->channelId = channelId;
+}
+
+const std::string &Client::getChannelId() const { return channelId; }

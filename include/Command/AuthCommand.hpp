@@ -7,13 +7,13 @@
 #include "Command/Command.hpp"
 #include <regex>
 
-struct Parameters {
-  const std::string username;
-  const std::string secret;
-  const std::string displayName;
-};
-
 class AuthCommand : public Command {
+
+  struct Parameters {
+    const std::string username;
+    const std::string secret;
+    const std::string displayName;
+  };
 
 private:
   Parameters parameters;
