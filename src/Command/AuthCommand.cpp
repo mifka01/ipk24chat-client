@@ -29,5 +29,6 @@ Parameters AuthCommand::parse(const std::string &message) {
 
 void AuthCommand::execute() const {
   client.send(AuthMessage(getUsername(), getDisplayName(), getSecret()));
+  client.setDisplayName(getDisplayName());
   client.changeState(std::make_unique<AuthState>(client));
 }

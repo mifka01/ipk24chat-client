@@ -1,9 +1,8 @@
 #include "Client/State/StartState.hpp"
 #include "Command/AuthCommand.hpp"
-#include "Message/AuthMessage.hpp"
 #include <iostream>
 
-void StartState::processInput() {
+void StartState::handleInput() {
   std::string message;
   std::getline(std::cin, message);
 

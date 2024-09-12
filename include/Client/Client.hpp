@@ -24,11 +24,13 @@ class Client {
 
 private:
   const ServerInfo &server;
-  const Protocol &protocol;
+  Protocol &protocol;
   std::unique_ptr<State> state;
   struct addrinfo *addrinfo;
   int socket;
   std::unique_ptr<std::string> displayName = nullptr;
+
+  bool isRunning = false;
 
   struct addrinfo *getAddrInfo() const;
 
@@ -40,11 +42,13 @@ public:
 
   void changeState(std::unique_ptr<State> newState);
 
-  void handleError(const ErrMessage &error);
-
   void send(const Message &message) const;
 
+  const std::unique_ptr<Message> receive();
+
   void run();
+
+  void disconnect();
 
   void setDisplayName(const std::string &displayName);
   const std::string &getDisplayName() const;
