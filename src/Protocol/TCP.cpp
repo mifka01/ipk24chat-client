@@ -14,11 +14,23 @@ void TCP::init(int socket, addrinfo *addrinfo) {
 }
 
 void TCP::send(int socket, const Message &message) const {
-  // Send data using the TCP protocol.
+  auto converter = messageConverters.find(message.type);
+  if (converter == messageConverters.end()) {
+    throw std::runtime_error("TCP failed to send: Unknown message type.");
+  }
+  std::string msg = converter->second(message);
+
+  ::send(socket, msg.c_str(), msg.size(), 0);
+  Message::sent++;
 }
 
 void TCP::receive() const {
   // Recieve data using the TCP protocol.
+}
+
+const std::string TCP::convertAuthMessage(const AuthMessage &message) const {
+  return "AUTH " + message.username + " AS " + message.displayName + " USING " +
+         message.secret + CRLF;
 }
 
 int TCP::getSocketType() const { return SOCK_STREAM; }

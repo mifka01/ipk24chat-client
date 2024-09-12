@@ -18,4 +18,6 @@ void UDP::receive() const {
   // Recieve data using the UDP protocol.
 }
 
+const std::string UDP::convertAuthMessage(const AuthMessage &message) const {}
+
 int UDP::getSocketType() const { return SOCK_DGRAM; }

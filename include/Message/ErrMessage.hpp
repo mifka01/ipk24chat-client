@@ -1,3 +1,4 @@
+#pragma once
 #include "Message/Message.hpp"
 #include <string>
 
@@ -7,6 +8,6 @@ public:
   const std::string username;
   const std::string content;
 
-  ErrMessage(const std::string username, const std::string content)
-      : username(username), content(content) {}
+  ErrMessage(const std::string &username, const std::string &content)
+      : Message(MessageType::ERR), username(username), content(content) {}
 };
