@@ -9,5 +9,4 @@ public:
   void handleResponse() override;
 
   void handleReplyMessage(const ReplyMessage &message) override;
-  void handleErrMessage(const ErrMessage &message) override;
 };

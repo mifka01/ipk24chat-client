@@ -2,6 +2,8 @@
 #include "Client/State/EndState.hpp"
 #include "Client/State/OpenState.hpp"
 #include "Command/AuthCommand.hpp"
+#include "Command/JoinCommand.hpp"
+#include "Command/RenameCommand.hpp"
 #include "Message/ByeMessage.hpp"
 #include <iostream>
 
@@ -17,22 +19,13 @@ void AuthState::handleInput() {
     AuthCommand command(client, message);
     command.execute();
   }
-}
 
-void AuthState::handleReplyMessage(const ReplyMessage &message) {
-  std::cerr << message.toString() << std::endl;
-
-  if (!message.success) {
-    client.setDisplayName("");
+  if (JoinCommand::match(message) || RenameCommand::match(message)) {
+    client.error("You are not authenticated");
     return;
   }
-  client.changeState(std::make_unique<OpenState>(client));
-}
 
-void AuthState::handleErrMessage(const ErrMessage &message) {
-  std::cerr << message.toString() << std::endl;
-  client.send(ByeMessage());
-  client.changeState(std::make_unique<EndState>(client));
+  client.error("Invalid command");
 }
 
 void AuthState::handleResponse() {
@@ -46,4 +39,14 @@ void AuthState::handleResponse() {
     return;
   }
   converter->second(*response);
+}
+
+void AuthState::handleReplyMessage(const ReplyMessage &message) {
+  std::cerr << message.toString() << std::endl;
+
+  if (!message.success) {
+    client.setDisplayName("");
+    return;
+  }
+  client.changeState(std::make_unique<OpenState>(client));
 }
