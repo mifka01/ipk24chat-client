@@ -39,8 +39,7 @@ const std::unique_ptr<Message> TCP::receive(int socket) {
     }
 
     if (bytes_received == 0) {
-      std::cout << "Connection closed by peer." << std::endl;
-      break;
+      return std::make_unique<ByeMessage>();
     }
 
     tmp[bytes_received] = '\0';
@@ -85,7 +84,6 @@ TCP::handleReplyMessage(const std::string &message) const {
 
   std::string success = match[1];
   std::string content = match[2];
-  std::cout << "Received: " << success << " " << content << std::endl;
 
   return std::make_unique<ReplyMessage>(success == "OK", content,
                                         Message::sent);
@@ -93,9 +91,9 @@ TCP::handleReplyMessage(const std::string &message) const {
 
 std::unique_ptr<ErrMessage>
 TCP::handleErrMessage(const std::string &message) const {
-  std::cout << "Received: " << message << std::endl;
   std::smatch match;
-  std::regex pattern("ERR FROM IS " + std::string(MessagePattern::CONTENT),
+  std::regex pattern("ERR FROM " + std::string(MessagePattern::DISPLAY_NAME) +
+                         " IS " + MessagePattern::CONTENT,
                      std::regex::icase);
 
   if (!std::regex_match(message, match, pattern)) {
