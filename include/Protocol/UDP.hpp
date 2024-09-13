@@ -26,11 +26,18 @@ public:
 
   const std::string convertByeMessage(const ByeMessage &message) const override;
 
+  const std::string convertErrMessage(const ErrMessage &message) const override;
+
+  const std::string convertMsgMessage(const MsgMessage &message) const override;
+
   std::unique_ptr<ReplyMessage>
   handleReplyMessage(const std::string &message) const override;
 
   std::unique_ptr<ErrMessage>
   handleErrMessage(const std::string &message) const override;
+
+  std::unique_ptr<MsgMessage>
+  handleMsgMessage(const std::string &message) const override;
 
   std::unique_ptr<ByeMessage>
   handleByeMessage(const std::string &message) const override;

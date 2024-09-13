@@ -2,6 +2,7 @@
 #include "Message.hpp"
 #include "Message/ByeMessage.hpp"
 #include "Message/ErrMessage.hpp"
+#include "Message/MsgMessage.hpp"
 #include "Message/ReplyMessage.hpp"
 #include <stdexcept>
 
@@ -20,6 +21,9 @@ public:
     case MessageType::ERR:
       handleErrMessage(dynamic_cast<const ErrMessage &>(message));
       break;
+    case MessageType::MSG:
+      handleMsgMessage(dynamic_cast<const MsgMessage &>(message));
+      break;
     case MessageType::BYE:
       handleByeMessage(dynamic_cast<const ByeMessage &>(message));
       break;
@@ -36,5 +40,6 @@ public:
 
   virtual void handleReplyMessage(const ReplyMessage &message) = 0;
   virtual void handleErrMessage(const ErrMessage &message) = 0;
+  virtual void handleMsgMessage(const MsgMessage &message) = 0;
   virtual void handleByeMessage(const ByeMessage &message) = 0;
 };

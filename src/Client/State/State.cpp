@@ -10,6 +10,10 @@ void State::handleErrMessage(const ErrMessage &message) {
   client.changeState(std::make_unique<EndState>(client));
 }
 
+void State::handleMsgMessage(const MsgMessage &message) {
+  std::cout << message.toString() << std::endl;
+}
+
 void State::handleByeMessage(const ByeMessage &message) {
   (void)message;
   client.changeState(std::make_unique<EndState>(client));

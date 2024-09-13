@@ -20,5 +20,6 @@ public:
 
   virtual void handleReplyMessage(const ReplyMessage &message) override;
   virtual void handleErrMessage(const ErrMessage &message) override;
+  virtual void handleMsgMessage(const MsgMessage &message) override;
   virtual void handleByeMessage(const ByeMessage &message) override;
 };
