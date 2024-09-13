@@ -24,6 +24,12 @@ const std::unique_ptr<Message> UDP::receive(int socket) {
   return nullptr;
 }
 
+MessageType UDP::determineMessageType(const std::string &message) const {
+  (void)message;
+  // Determine the message type.
+  return MessageType::AUTH;
+}
+
 const std::string UDP::convertAuthMessage(const AuthMessage &message) const {
   (void)message;
   // Convert the AuthMessage to a string.

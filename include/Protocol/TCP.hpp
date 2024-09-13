@@ -25,6 +25,8 @@ public:
 
   const std::unique_ptr<Message> receive(int socket) override;
 
+  MessageType determineMessageType(const std::string &message) const override;
+
   const std::string
   convertAuthMessage(const AuthMessage &message) const override;
 

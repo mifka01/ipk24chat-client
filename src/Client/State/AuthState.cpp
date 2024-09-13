@@ -1,10 +1,8 @@
 #include "Client/State/AuthState.hpp"
-#include "Client/State/EndState.hpp"
 #include "Client/State/OpenState.hpp"
 #include "Command/AuthCommand.hpp"
 #include "Command/JoinCommand.hpp"
 #include "Command/RenameCommand.hpp"
-#include "Message/ByeMessage.hpp"
 #include <iostream>
 
 void AuthState::handleInput() {
@@ -34,11 +32,7 @@ void AuthState::handleResponse() {
     return;
   }
 
-  auto converter = messageConverters.find(response->type);
-  if (converter == messageConverters.end()) {
-    return;
-  }
-  converter->second(*response);
+  handleMessage(*response);
 }
 
 void AuthState::handleReplyMessage(const ReplyMessage &message) {
