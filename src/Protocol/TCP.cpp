@@ -5,7 +5,6 @@
  */
 #include "Protocol/TCP.hpp"
 #include <cstring>
-#include <iostream>
 #include <netdb.h>
 #include <regex>
 #include <stdexcept>
@@ -17,11 +16,7 @@ void TCP::init(int socket, addrinfo *addrinfo) {
 }
 
 void TCP::send(int socket, const Message &message) const {
-  auto converter = messageConverters.find(message.type);
-  if (converter == messageConverters.end()) {
-    throw std::runtime_error("TCP failed to send: Unknown message type.");
-  }
-  std::string msg = converter->second(message);
+  std::string msg = convertMessage(message);
 
   ::send(socket, msg.c_str(), msg.size(), 0);
   Message::sent++;
@@ -49,16 +44,21 @@ const std::unique_ptr<Message> TCP::receive(int socket) {
     if (pos != std::string::npos) {
       std::string message = buffer.substr(0, pos);
       buffer.erase(0, pos + strlen(CRLF));
-      std::string type = message.substr(0, message.find(' '));
-      auto converter =
-          responseConverter.find(Message::StringToMessageType(type));
-      if (converter != responseConverter.end()) {
-        Message::received++;
-        return converter->second(message);
-      }
+
+      MessageType type = determineMessageType(message);
+
+      // TODO not confirmed
+      Message::received++;
+      return convertResponse(type, message);
     }
   }
   throw std::runtime_error("TCP failed to receive.");
+}
+
+MessageType TCP::determineMessageType(const std::string &message) const {
+  std::string type = message.substr(0, message.find(' '));
+  std::transform(type.begin(), type.end(), type.begin(), ::toupper);
+  return Message::StringToMessageType(type);
 }
 
 const std::string TCP::convertAuthMessage(const AuthMessage &message) const {
