@@ -1,4 +1,5 @@
 #include "Client/State/OpenState.hpp"
+#include "Client/State/EndState.hpp"
 #include "Command/AuthCommand.hpp"
 #include "Command/JoinCommand.hpp"
 #include "Command/RenameCommand.hpp"
@@ -28,6 +29,14 @@ void OpenState::handleInput() {
     command.execute();
     return;
   }
+
+  if (message == "BYE") {
+    client.send(ByeMessage());
+    client.changeState(std::make_unique<EndState>(client));
+    return;
+  }
+
+  client.send(MsgMessage(client.getDisplayName(), message));
 }
 
 void OpenState::handleResponse() {

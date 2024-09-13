@@ -42,6 +42,18 @@ const std::string UDP::convertByeMessage(const ByeMessage &message) const {
   return "";
 }
 
+const std::string UDP::convertErrMessage(const ErrMessage &message) const {
+  (void)message;
+  // Convert the ErrMessage to a string.
+  return "";
+}
+
+const std::string UDP::convertMsgMessage(const MsgMessage &message) const {
+  (void)message;
+  // Convert the MsgMessage to a string.
+  return "";
+}
+
 std::unique_ptr<ReplyMessage>
 UDP::handleReplyMessage(const std::string &message) const {
   (void)message;
@@ -53,6 +65,13 @@ std::unique_ptr<ErrMessage>
 UDP::handleErrMessage(const std::string &message) const {
   (void)message;
   // Handle the ErrMessage.
+  return nullptr;
+}
+
+std::unique_ptr<MsgMessage>
+UDP::handleMsgMessage(const std::string &message) const {
+  (void)message;
+  // Handle the MsgMessage.
   return nullptr;
 }
 

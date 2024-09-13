@@ -71,6 +71,14 @@ const std::string TCP::convertByeMessage(const ByeMessage &message) const {
   return "BYE" + std::string(CRLF);
 }
 
+const std::string TCP::convertErrMessage(const ErrMessage &message) const {
+  return "ERR FROM " + message.displayName + " IS " + message.content + CRLF;
+}
+
+const std::string TCP::convertMsgMessage(const MsgMessage &message) const {
+  return "MSG FROM " + message.displayName + " IS " + message.content + CRLF;
+}
+
 std::unique_ptr<ReplyMessage>
 TCP::handleReplyMessage(const std::string &message) const {
   std::smatch match;
@@ -104,6 +112,23 @@ TCP::handleErrMessage(const std::string &message) const {
   std::string content = match[2];
 
   return std::make_unique<ErrMessage>(displayName, content);
+}
+
+std::unique_ptr<MsgMessage>
+TCP::handleMsgMessage(const std::string &message) const {
+  std::smatch match;
+  std::regex pattern("MSG FROM " + std::string(MessagePattern::DISPLAY_NAME) +
+                         " IS " + MessagePattern::CONTENT,
+                     std::regex::icase);
+
+  if (!std::regex_match(message, match, pattern)) {
+    return nullptr;
+  }
+
+  std::string displayName = match[1];
+  std::string content = match[2];
+
+  return std::make_unique<MsgMessage>(displayName, content);
 }
 
 std::unique_ptr<ByeMessage>
