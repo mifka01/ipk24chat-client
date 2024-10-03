@@ -5,6 +5,7 @@
  */
 #pragma once
 #include "Protocol.hpp"
+#include <unordered_set>
 
 /**
  * @class UDP
@@ -13,6 +14,9 @@
  * The UDP class provides functionality for the UDP protocol.
  */
 class UDP : public Protocol {
+
+private:
+  std::unordered_set<u_int16_t> receivedMessages;
 
 public:
   void init(int socket, addrinfo *addrinfo) override;
