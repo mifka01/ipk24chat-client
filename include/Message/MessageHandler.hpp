@@ -1,6 +1,7 @@
 #pragma once
 #include "Message.hpp"
 #include "Message/ByeMessage.hpp"
+#include "Message/ConfirmMessage.hpp"
 #include "Message/ErrMessage.hpp"
 #include "Message/MsgMessage.hpp"
 #include "Message/ReplyMessage.hpp"
@@ -27,6 +28,9 @@ public:
     case MessageType::BYE:
       handleByeMessage(dynamic_cast<const ByeMessage &>(message));
       break;
+    case MessageType::CONFIRM:
+      handleConfirmMessage(dynamic_cast<const ConfirmMessage &>(message));
+      break;
     default:
       handleUnknownMessage(message);
       break;
@@ -38,6 +42,7 @@ public:
     throw std::runtime_error("Unknown message type");
   }
 
+  virtual void handleConfirmMessage(const ConfirmMessage &message) {};
   virtual void handleReplyMessage(const ReplyMessage &message) = 0;
   virtual void handleErrMessage(const ErrMessage &message) = 0;
   virtual void handleMsgMessage(const MsgMessage &message) = 0;
