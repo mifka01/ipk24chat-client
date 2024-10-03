@@ -7,7 +7,6 @@
 
 #include "Message/Message.hpp"
 #include "Message/MessageConverter.hpp"
-#include "Message/MessageHandler.hpp"
 #include <memory>
 #include <netdb.h>
 

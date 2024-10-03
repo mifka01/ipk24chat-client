@@ -28,6 +28,7 @@ void AuthState::handleInput() {
 
 void AuthState::handleResponse() {
   std::unique_ptr<Message> response = client.receive();
+
   if (response == nullptr) {
     return;
   }

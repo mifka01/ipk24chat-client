@@ -13,4 +13,9 @@ public:
               const std::string secret)
       : Message(MessageType::AUTH), username(username),
         displayName(displayName), secret(secret) {}
+
+  AuthMessage(const u_int16_t id, const std::string username,
+              const std::string displayName, const std::string secret)
+      : Message(MessageType::AUTH, id), username(username),
+        displayName(displayName), secret(secret) {}
 };
