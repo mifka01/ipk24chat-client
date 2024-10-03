@@ -5,7 +5,6 @@
  */
 #pragma once
 
-#include "Message/ErrMessage.hpp"
 #include "Protocol/Protocol.hpp"
 #include "SocketPoller.hpp"
 #include "State/State.hpp"

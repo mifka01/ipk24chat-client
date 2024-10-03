@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Client/Client.hpp"
+#include "Message/MessageHandler.hpp"
 
 class Client;
 

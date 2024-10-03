@@ -12,5 +12,10 @@ public:
       : ResponseMessage(MessageType::ERR), displayName(displayName),
         content(content) {}
 
+  ErrMessage(const u_int16_t id, const std::string &displayName,
+             const std::string &content)
+      : ResponseMessage(MessageType::ERR, id), displayName(displayName),
+        content(content) {}
+
   std::string toString() const override;
 };

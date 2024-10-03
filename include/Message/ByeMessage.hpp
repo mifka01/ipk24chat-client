@@ -1,8 +1,11 @@
 #pragma once
-#include "Message/Message.hpp"
+#include "Message/ResponseMessage.hpp"
 
-class ByeMessage : public Message {
+class ByeMessage : public ResponseMessage {
 
 public:
-  ByeMessage() : Message(MessageType::BYE) {}
+  ByeMessage() : ResponseMessage(MessageType::BYE) {}
+  ByeMessage(const u_int16_t id) : ResponseMessage(MessageType::BYE, id) {}
+
+  std::string toString() const override;
 };
