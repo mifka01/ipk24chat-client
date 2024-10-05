@@ -2,6 +2,7 @@
 #include "Message.hpp"
 #include "Message/AuthMessage.hpp"
 #include "Message/ByeMessage.hpp"
+#include "Message/ConfirmMessage.hpp"
 #include "Message/ErrMessage.hpp"
 #include "Message/MsgMessage.hpp"
 #include "Message/ReplyMessage.hpp"
@@ -27,6 +28,8 @@ public:
       return handleMsgMessage(message);
     case MessageType::BYE:
       return handleByeMessage(message);
+    case MessageType::CONFIRM:
+      return handleConfirmMessage(message);
     default:
       throw std::runtime_error(
           "Unsupported message type for response conversion");
@@ -43,6 +46,9 @@ public:
       return convertMsgMessage(dynamic_cast<const MsgMessage &>(message));
     case MessageType::BYE:
       return convertByeMessage(dynamic_cast<const ByeMessage &>(message));
+    case MessageType::CONFIRM:
+      return convertConfirmMessage(
+          dynamic_cast<const ConfirmMessage &>(message));
     default:
       throw std::runtime_error("Unsupported message type for conversion");
     }
@@ -59,6 +65,11 @@ public:
   convertMsgMessage(const MsgMessage &message) const = 0;
   virtual const std::string
   convertByeMessage(const ByeMessage &message) const = 0;
+  virtual const std::string
+  convertConfirmMessage(const ConfirmMessage &message) const {
+    (void)message;
+    return "";
+  }
 
   virtual std::unique_ptr<ReplyMessage>
   handleReplyMessage(const std::string &message) const = 0;
@@ -68,4 +79,9 @@ public:
   handleMsgMessage(const std::string &message) const = 0;
   virtual std::unique_ptr<ByeMessage>
   handleByeMessage(const std::string &message) const = 0;
+  virtual std::unique_ptr<ConfirmMessage>
+  handleConfirmMessage(const std::string &message) const {
+    (void)message;
+    return nullptr;
+  }
 };

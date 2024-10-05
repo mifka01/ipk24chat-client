@@ -25,6 +25,13 @@ public:
 
   MessageType determineMessageType(const std::string &message) const override;
 
+  uint16_t determineMessageId(uint8_t high, uint8_t low) const;
+
+  uint16_t determineMessageId(const std::string &message) const;
+
+  void addMessageHeader(std::string &message, const MessageType &type,
+                        const uint16_t &id) const;
+
   const std::string
   convertAuthMessage(const AuthMessage &message) const override;
 
@@ -33,6 +40,9 @@ public:
   const std::string convertErrMessage(const ErrMessage &message) const override;
 
   const std::string convertMsgMessage(const MsgMessage &message) const override;
+
+  const std::string
+  convertConfirmMessage(const ConfirmMessage &message) const override;
 
   std::unique_ptr<ReplyMessage>
   handleReplyMessage(const std::string &message) const override;
@@ -45,6 +55,9 @@ public:
 
   std::unique_ptr<ByeMessage>
   handleByeMessage(const std::string &message) const override;
+
+  std::unique_ptr<ConfirmMessage>
+  handleConfirmMessage(const std::string &message) const override;
 
   int getSocketType() const override;
 };
