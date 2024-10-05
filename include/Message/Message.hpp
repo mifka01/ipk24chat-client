@@ -28,7 +28,7 @@ public:
   static uint16_t received;
 
   Message(MessageType type, const uint16_t id) : type(type), id(id) {}
-  Message(MessageType type) : type(type), id(sent++) {}
+  Message(MessageType type) : type(type), id(sent) {}
   virtual ~Message() = default;
 
   static std::string MessageTypeToString(MessageType type);

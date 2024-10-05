@@ -19,6 +19,9 @@
  */
 class Protocol : public MessageConverter {
 
+protected:
+  constexpr static const int BUFFER_SIZE = 256;
+
 public:
   virtual void init(int socket, addrinfo *addrinfo) = 0;
   virtual void send(int socket, const Message &message) const = 0;

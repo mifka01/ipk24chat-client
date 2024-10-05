@@ -42,7 +42,9 @@ public:
     throw std::runtime_error("Unknown message type");
   }
 
-  virtual void handleConfirmMessage(const ConfirmMessage &message) {};
+  virtual void handleConfirmMessage(const ConfirmMessage &message) {
+    (void)message;
+  }
   virtual void handleReplyMessage(const ReplyMessage &message) = 0;
   virtual void handleErrMessage(const ErrMessage &message) = 0;
   virtual void handleMsgMessage(const MsgMessage &message) = 0;
