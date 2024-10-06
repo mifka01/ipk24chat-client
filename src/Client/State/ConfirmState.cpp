@@ -19,18 +19,3 @@ void ConfirmState::handleResponse() {
 
   handleMessage(*response);
 }
-
-void ConfirmState::onEnter() {
-  int events = client.poller.poll(250);
-
-  if (events < 0) {
-
-    if (client.poller.hasEvent(1, POLLIN)) {
-      handleResponse();
-    }
-
-    if (client.poller.hasEvent(0, POLLIN)) {
-      handleInput();
-    }
-  }
-}
