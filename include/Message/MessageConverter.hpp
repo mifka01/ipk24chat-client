@@ -4,6 +4,7 @@
 #include "Message/ByeMessage.hpp"
 #include "Message/ConfirmMessage.hpp"
 #include "Message/ErrMessage.hpp"
+#include "Message/JoinMessage.hpp"
 #include "Message/MsgMessage.hpp"
 #include "Message/ReplyMessage.hpp"
 #include <memory>
@@ -40,6 +41,8 @@ public:
     switch (message.type) {
     case MessageType::AUTH:
       return convertAuthMessage(dynamic_cast<const AuthMessage &>(message));
+    case MessageType::JOIN:
+      return convertJoinMessage(dynamic_cast<const JoinMessage &>(message));
     case MessageType::ERR:
       return convertErrMessage(dynamic_cast<const ErrMessage &>(message));
     case MessageType::MSG:
@@ -59,6 +62,8 @@ public:
 
   virtual const std::string
   convertAuthMessage(const AuthMessage &message) const = 0;
+  virtual const std::string
+  convertJoinMessage(const JoinMessage &message) const = 0;
   virtual const std::string
   convertErrMessage(const ErrMessage &message) const = 0;
   virtual const std::string

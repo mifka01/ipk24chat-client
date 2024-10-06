@@ -28,8 +28,8 @@ private:
    * The Join command is used to join a channel.
    */
 public:
-  JoinCommand(Client &client, const std::string &displayName)
-      : Command(client, COMMAND_NAME), parameters{displayName} {}
+  JoinCommand(Client &client, const std::string &message)
+      : Command(client, COMMAND_NAME), parameters(parse(message)) {}
 
   JoinCommand(Client &client, const Parameters &parameters)
       : Command(client, COMMAND_NAME), parameters(parameters) {}

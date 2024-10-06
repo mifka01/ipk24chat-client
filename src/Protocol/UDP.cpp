@@ -5,7 +5,7 @@
  */
 #include "Protocol/UDP.hpp"
 #include "Message/ConfirmMessage.hpp"
-#include <iostream>
+#include <cstring>
 #include <netdb.h>
 
 void UDP::init(int socket, addrinfo *addrinfo) {
@@ -86,6 +86,17 @@ const std::string UDP::convertAuthMessage(const AuthMessage &message) const {
   converted += message.username + '\0';
   converted += message.displayName + '\0';
   converted += message.secret + '\0';
+
+  return converted;
+}
+
+const std::string UDP::convertJoinMessage(const JoinMessage &message) const {
+  std::string converted;
+
+  addMessageHeader(converted, message.type, message.id);
+
+  converted += message.channelId + '\0';
+  converted += message.displayName + '\0';
 
   return converted;
 }

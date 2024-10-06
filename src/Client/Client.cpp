@@ -1,13 +1,22 @@
 #include "Client/Client.hpp"
 #include "Client/State/StartState.hpp"
+#include <csignal>
 #include <cstring>
 #include <iostream>
+#include <signal.h>
 #include <stdexcept>
 #include <unistd.h>
 
+volatile bool g_interrupted(false);
+
+void sigintHandler(int signum) {
+  (void)signum;
+  g_interrupted = true;
+}
+
 Client::Client(ServerInfo &server, Protocol &protocol)
-    : server(server), protocol(protocol),
-      state(std::make_unique<StartState>(*this)) {
+    : server(server), state(std::make_unique<StartState>(*this)),
+      protocol(protocol) {
 
   addrinfo = getAddrInfo();
 
@@ -43,6 +52,12 @@ const std::unique_ptr<Message> Client::receive() {
 }
 
 void Client::run() {
+  struct sigaction sa;
+  sa.sa_handler = sigintHandler;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = 0;
+  sigaction(SIGINT, &sa, nullptr);
+
   isRunning = true;
 
   while (true) {
@@ -51,9 +66,18 @@ void Client::run() {
       break;
     }
 
+    // Check for SIGINT
+    if (g_interrupted) {
+      state->handleSigInt();
+    }
+
     int events = poller.poll();
 
     if (events < 0) {
+      if (errno == EINTR) {
+        // Interrupted by a signal, continue the loop
+        continue;
+      }
       throw std::runtime_error("Failed to poll");
     }
 

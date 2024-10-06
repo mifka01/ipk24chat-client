@@ -66,6 +66,10 @@ const std::string TCP::convertAuthMessage(const AuthMessage &message) const {
          message.secret + CRLF;
 }
 
+const std::string TCP::convertJoinMessage(const JoinMessage &message) const {
+  return "JOIN " + message.channelId + " AS " + message.displayName + CRLF;
+}
+
 const std::string TCP::convertByeMessage(const ByeMessage &message) const {
   (void)message;
   return "BYE" + std::string(CRLF);

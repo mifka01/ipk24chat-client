@@ -27,4 +27,6 @@ public:
   virtual void send(int socket, const Message &message) const = 0;
   virtual const std::unique_ptr<Message> receive(int socket) = 0;
   virtual int getSocketType() const = 0;
+
+  virtual bool needConfirmation() const { return false; };
 };
