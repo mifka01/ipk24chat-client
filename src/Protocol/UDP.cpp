@@ -5,6 +5,7 @@
  */
 #include "Protocol/UDP.hpp"
 #include "Message/ConfirmMessage.hpp"
+#include <iostream>
 #include <netdb.h>
 
 void UDP::init(int socket, addrinfo *addrinfo) {
@@ -41,6 +42,7 @@ const std::unique_ptr<Message> UDP::receive(int socket) {
 
   // check if message format is correct
   MessageType type = determineMessageType(message);
+
   std::unique_ptr<Message> response = convertResponse(type, message);
 
   if (receivedMessages.find(response->id) != receivedMessages.end()) {
@@ -57,7 +59,7 @@ const std::unique_ptr<Message> UDP::receive(int socket) {
 }
 
 MessageType UDP::determineMessageType(const std::string &message) const {
-  return static_cast<MessageType>(message[0]);
+  return static_cast<MessageType>(static_cast<uint8_t>(message[0]));
 }
 
 uint16_t UDP::determineMessageId(uint8_t high, uint8_t low) const {
