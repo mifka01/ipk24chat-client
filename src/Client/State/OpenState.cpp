@@ -30,12 +30,6 @@ void OpenState::handleInput() {
     return;
   }
 
-  if (message == "BYE") {
-    client.send(ByeMessage());
-    client.changeState(std::make_unique<EndState>(client));
-    return;
-  }
-
   client.send(MsgMessage(client.getDisplayName(), message));
 }
 
