@@ -28,8 +28,8 @@ private:
    * The Rename command is used to change client's display name.
    */
 public:
-  RenameCommand(Client &client, const std::string &displayName)
-      : Command(client, COMMAND_NAME), parameters{displayName} {}
+  RenameCommand(Client &client, const std::string &message)
+      : Command(client, COMMAND_NAME), parameters(parse(message)) {}
 
   RenameCommand(Client &client, const Parameters &parameters)
       : Command(client, COMMAND_NAME), parameters(parameters) {}
