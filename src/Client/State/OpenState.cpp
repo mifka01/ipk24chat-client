@@ -3,6 +3,7 @@
 #include "Command/AuthCommand.hpp"
 #include "Command/JoinCommand.hpp"
 #include "Command/RenameCommand.hpp"
+#include "Message/JoinMessage.hpp"
 #include <iostream>
 
 void OpenState::handleInput() {
@@ -41,4 +42,24 @@ void OpenState::handleResponse() {
   }
 
   handleMessage(*response);
+}
+
+void OpenState::handleSigInt() {
+  client.send(ByeMessage());
+  client.changeState(std::make_unique<EndState>(client));
+}
+
+void OpenState::handleReplyMessage(const ReplyMessage &message) {
+  std::cerr << message.toString() << std::endl;
+
+  // There is only reply to JoinMessage that can be received in OpenState
+  JoinMessage *joinMessage =
+      dynamic_cast<JoinMessage *>(client.waitingForReply.get());
+
+  if (joinMessage->id == message.refId || !client.protocol.needConfirmation()) {
+    if (message.success) {
+      client.setChannelId(joinMessage->channelId);
+    }
+    client.waitingForReply.reset();
+  }
 }

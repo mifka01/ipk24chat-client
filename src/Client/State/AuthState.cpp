@@ -39,9 +39,14 @@ void AuthState::handleResponse() {
 void AuthState::handleReplyMessage(const ReplyMessage &message) {
   std::cerr << message.toString() << std::endl;
 
-  if (!message.success) {
-    client.setDisplayName("");
-    return;
+  if (client.waitingForReply->id == message.refId ||
+      !client.protocol.needConfirmation()) {
+    client.waitingForReply.reset();
+    if (message.success) {
+      client.changeState(std::make_unique<OpenState>(client));
+      return;
+    } else {
+      client.setDisplayName("");
+    }
   }
-  client.changeState(std::make_unique<OpenState>(client));
 }

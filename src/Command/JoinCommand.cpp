@@ -4,6 +4,8 @@
  * @date March 2024
  */
 #include "Command/JoinCommand.hpp"
+#include "Message/JoinMessage.hpp"
+#include <sstream>
 
 const std::regex JoinCommand::PATTERN("^" + std::string(WHITESPACE_REGEX) +
                                           PREFIX + COMMAND_NAME + SPACE_REGEX +
@@ -23,4 +25,15 @@ JoinCommand::Parameters JoinCommand::parse(const std::string &message) {
   return Parameters{match[1]};
 }
 
-void JoinCommand::execute() const { client.setChannelId(getChannelId()); }
+void JoinCommand::execute() const {
+  if (client.getChannelId() == getChannelId()) {
+    std::ostringstream oss;
+    oss << "You are already in " << getChannelId() << " channel";
+    client.error(oss.str());
+    return;
+  }
+
+  client.waitingForReply =
+      std::make_unique<JoinMessage>(getChannelId(), client.getDisplayName());
+  client.send(*client.waitingForReply);
+}

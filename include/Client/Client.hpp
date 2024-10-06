@@ -23,7 +23,6 @@ class Client {
 
 private:
   const ServerInfo &server;
-  Protocol &protocol;
   std::unique_ptr<State> state;
   struct addrinfo *addrinfo;
   int socket;
@@ -35,7 +34,9 @@ private:
   struct addrinfo *getAddrInfo() const;
 
 public:
+  Protocol &protocol;
   SocketPoller poller;
+  std::unique_ptr<Message> waitingForReply;
 
   Client(ServerInfo &server, Protocol &protocol);
   ~Client();
@@ -58,4 +59,6 @@ public:
   void setChannelId(const std::string &channelId);
 
   const std::string &getChannelId() const;
+
+  static void signalHandler(int signal);
 };

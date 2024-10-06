@@ -30,6 +30,9 @@ public:
   const std::string
   convertAuthMessage(const AuthMessage &message) const override;
 
+  const std::string
+  convertJoinMessage(const JoinMessage &message) const override;
+
   const std::string convertByeMessage(const ByeMessage &message) const override;
 
   const std::string convertErrMessage(const ErrMessage &message) const override;
