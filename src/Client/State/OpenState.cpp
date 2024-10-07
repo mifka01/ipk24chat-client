@@ -31,7 +31,7 @@ void OpenState::handleInput() {
     return;
   }
 
-  client.send(MsgMessage(client.getDisplayName(), message));
+  client.send(std::make_unique<MsgMessage>(client.getDisplayName(), message));
 }
 
 void OpenState::handleResponse() {
@@ -45,7 +45,7 @@ void OpenState::handleResponse() {
 }
 
 void OpenState::handleSigInt() {
-  client.send(ByeMessage());
+  client.send(std::make_unique<ByeMessage>());
   client.changeState(std::make_unique<EndState>(client));
 }
 
@@ -56,10 +56,28 @@ void OpenState::handleReplyMessage(const ReplyMessage &message) {
   JoinMessage *joinMessage =
       dynamic_cast<JoinMessage *>(client.waitingForReply.get());
 
-  if (joinMessage->id == message.refId || !client.protocol.needConfirmation()) {
+  if (!client.protocol.needConfirmation() || joinMessage->id == message.refId) {
     if (message.success) {
       client.setChannelId(joinMessage->channelId);
     }
     client.waitingForReply.reset();
+    return;
   }
+}
+
+void OpenState::handleConfirmMessage(const ConfirmMessage &message) {
+  if (!client.protocol.needConfirmation()) {
+    return;
+  }
+
+  if (client.waitingForConfirm->id != message.refId) {
+    return;
+  }
+
+  if (client.waitingForConfirm->type == MessageType::AUTH ||
+      client.waitingForConfirm->type == MessageType::JOIN) {
+    client.waitingForReply = std::move(client.waitingForConfirm);
+  }
+
+  client.waitingForConfirm.reset();
 }

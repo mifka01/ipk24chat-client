@@ -40,14 +40,30 @@ void AuthState::handleResponse() {
 void AuthState::handleReplyMessage(const ReplyMessage &message) {
   std::cerr << message.toString() << std::endl;
 
-  if (client.waitingForReply->id == message.refId ||
-      !client.protocol.needConfirmation()) {
-    client.waitingForReply.reset();
+  if (!client.protocol.needConfirmation() ||
+      client.waitingForReply->id == message.refId) {
     if (message.success) {
       client.changeState(std::make_unique<OpenState>(client));
-      return;
     } else {
       client.setDisplayName("");
     }
+    client.waitingForReply.reset();
   }
+}
+
+void AuthState::handleConfirmMessage(const ConfirmMessage &message) {
+  if (!client.protocol.needConfirmation()) {
+    return;
+  }
+
+  if (client.waitingForConfirm->id != message.refId) {
+    return;
+  }
+
+  if (client.waitingForConfirm->type == MessageType::AUTH ||
+      client.waitingForConfirm->type == MessageType::JOIN) {
+    client.waitingForReply = std::move(client.waitingForConfirm);
+  }
+
+  client.waitingForConfirm.reset();
 }
