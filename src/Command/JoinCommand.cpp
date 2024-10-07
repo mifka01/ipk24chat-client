@@ -33,7 +33,6 @@ void JoinCommand::execute() const {
     return;
   }
 
-  client.waitingForReply =
-      std::make_unique<JoinMessage>(getChannelId(), client.getDisplayName());
-  client.send(*client.waitingForReply);
+  client.send(
+      std::make_unique<JoinMessage>(getChannelId(), client.getDisplayName()));
 }

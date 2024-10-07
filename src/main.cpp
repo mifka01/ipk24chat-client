@@ -28,10 +28,14 @@ int main(int argc, char *argv[]) {
     if (protocol == "TCP") {
       TCP tcp;
       Client client = Client(server, tcp);
+      client.setMaxRetries(std::stoi(args["retries"]));
+      client.setConfirmationTimeout(std::stoi(args["timeout"]));
       client.run();
     } else if (protocol == "UDP") {
       UDP udp;
       Client client = Client(server, udp);
+      client.setMaxRetries(std::stoi(args["retries"]));
+      client.setConfirmationTimeout(std::stoi(args["timeout"]));
       client.run();
     } else {
       throw std::invalid_argument("Invalid transport protocol.");

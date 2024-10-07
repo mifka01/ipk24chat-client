@@ -6,7 +6,7 @@ void State::handleReplyMessage(const ReplyMessage &message) { (void)message; }
 
 void State::handleErrMessage(const ErrMessage &message) {
   std::cerr << message.toString() << std::endl;
-  client.send(ByeMessage());
+  client.send(std::make_unique<ByeMessage>());
   client.changeState(std::make_unique<EndState>(client));
 }
 
