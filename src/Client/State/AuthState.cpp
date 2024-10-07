@@ -16,6 +16,7 @@ void AuthState::handleInput() {
   if (AuthCommand::match(message)) {
     AuthCommand command(client, message);
     command.execute();
+    return;
   }
 
   if (JoinCommand::match(message) || RenameCommand::match(message)) {
