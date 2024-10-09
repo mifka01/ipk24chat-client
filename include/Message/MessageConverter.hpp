@@ -1,4 +1,5 @@
 #pragma once
+#include "Exception/InvalidMessageException.hpp"
 #include "Message.hpp"
 #include "Message/AuthMessage.hpp"
 #include "Message/ByeMessage.hpp"
@@ -8,7 +9,6 @@
 #include "Message/MsgMessage.hpp"
 #include "Message/ReplyMessage.hpp"
 #include <memory>
-#include <stdexcept>
 #include <string>
 
 class MessageConverter {
@@ -32,8 +32,7 @@ public:
     case MessageType::CONFIRM:
       return handleConfirmMessage(message);
     default:
-      throw std::runtime_error(
-          "Unsupported message type for response conversion");
+      throw InvalidMessageException("Unsupported message type for conversion");
     }
   }
 
@@ -53,7 +52,7 @@ public:
       return convertConfirmMessage(
           dynamic_cast<const ConfirmMessage &>(message));
     default:
-      throw std::runtime_error("Unsupported message type for conversion");
+      throw InvalidMessageException("Unsupported message type for conversion");
     }
   }
 

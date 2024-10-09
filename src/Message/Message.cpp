@@ -1,5 +1,5 @@
 #include "Message/Message.hpp"
-#include <stdexcept>
+#include "Exception/InvalidMessageException.hpp"
 #include <unordered_map>
 
 uint16_t Message::sent = 0;
@@ -22,7 +22,7 @@ std::string Message::MessageTypeToString(MessageType type) {
   case MessageType::BYE:
     return "BYE";
   default:
-    return "UNKNOWN";
+    throw InvalidMessageException("Unsupported message type for conversion");
   }
 }
 
@@ -38,5 +38,5 @@ MessageType Message::StringToMessageType(const std::string &str) {
     return it->second;
   }
 
-  throw std::invalid_argument("Unknown message type: " + str);
+  throw InvalidMessageException("Unsupported message type for conversion");
 }

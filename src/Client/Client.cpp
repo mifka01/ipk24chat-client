@@ -1,5 +1,8 @@
 #include "Client/Client.hpp"
 #include "Client/State/AuthState.hpp"
+#include "Exception/InvalidCommandException.hpp"
+#include "Exception/InvalidMessageException.hpp"
+#include "Message/ErrMessage.hpp"
 #include <chrono>
 #include <csignal>
 #include <cstring>
@@ -44,7 +47,9 @@ Client::~Client() {
   if (socket > 0) {
     close(socket);
   }
-  freeaddrinfo(addrinfo);
+  if (addrinfo) {
+    freeaddrinfo(addrinfo);
+  }
 }
 
 void Client::send(std::unique_ptr<Message> message) {
@@ -80,8 +85,10 @@ void Client::handleConfirmation(
     std::chrono::steady_clock::time_point &last_unconfirmed_time,
     int &retries) {
 
-  if (!protocol.needConfirmation())
+  if (!protocol.needConfirmation()) {
+    processMessageQueue();
     return;
+  }
 
   auto current_time = std::chrono::steady_clock::now();
   auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -101,6 +108,31 @@ void Client::handleConfirmation(
   last_unconfirmed_time = std::chrono::steady_clock::now();
 }
 
+void Client::handleException(const std::exception &e) {
+  error(e.what());
+  send(std::make_unique<ErrMessage>(getDisplayName(), e.what()));
+}
+
+void Client::handleSocketEvents() {
+  if (poller.hasEvent(1, POLLIN)) {
+    try {
+      state->handleResponse();
+    } catch (const InvalidMessageException &e) {
+      handleException(e);
+    }
+  }
+
+  if (poller.hasEvent(0, POLLIN)) {
+    try {
+      state->handleInput();
+    } catch (const InvalidCommandException &e) {
+      handleException(e);
+    } catch (const InvalidMessageException &e) {
+      handleException(e);
+    }
+  }
+}
+
 void Client::run() {
   clientInstance = this;
 
@@ -118,12 +150,7 @@ void Client::run() {
     }
 
     int events = poller.poll(pollTimeout);
-
-    if (protocol.needConfirmation()) {
-      handleConfirmation(last_unconfirmed_time, retries);
-    } else {
-      processMessageQueue();
-    }
+    handleConfirmation(last_unconfirmed_time, retries);
 
     if (events < 0) {
       if (errno == EINTR) {
@@ -132,13 +159,7 @@ void Client::run() {
       throw std::runtime_error("Failed to poll");
     }
 
-    if (poller.hasEvent(1, POLLIN)) {
-      state->handleResponse();
-    }
-
-    if (poller.hasEvent(0, POLLIN)) {
-      state->handleInput();
-    }
+    handleSocketEvents();
   }
 }
 

@@ -63,6 +63,10 @@ public:
       std::chrono::steady_clock::time_point &last_unconfirmed_time,
       int &retries);
 
+  void handleException(const std::exception &e);
+
+  void handleSocketEvents();
+
   void run();
 
   void disconnect();

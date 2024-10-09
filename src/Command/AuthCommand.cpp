@@ -5,6 +5,7 @@
  */
 #include "Command/AuthCommand.hpp"
 #include "Client/State/AuthState.hpp"
+#include "Exception/InvalidCommandException.hpp"
 #include "Message/AuthMessage.hpp"
 
 const std::regex
@@ -21,7 +22,7 @@ bool AuthCommand::match(const std::string &message) {
 AuthCommand::Parameters AuthCommand::parse(const std::string &message) {
   std::smatch match;
   if (!std::regex_match(message, match, PATTERN)) {
-    throw std::invalid_argument("Invalid message format");
+    throw InvalidCommandException("Invalid auth command format.");
   }
 
   return Parameters{match[1], match[2], match[3]};

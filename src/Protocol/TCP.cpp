@@ -46,8 +46,6 @@ const std::unique_ptr<Message> TCP::receive(int socket) {
       buffer.erase(0, pos + strlen(CRLF));
 
       MessageType type = determineMessageType(message);
-
-      // TODO not confirmed
       Message::received++;
       return convertResponse(type, message);
     }
