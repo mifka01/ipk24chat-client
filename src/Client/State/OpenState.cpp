@@ -11,6 +11,8 @@ void OpenState::handleInput() {
   std::getline(std::cin, message);
 
   if (message.empty()) {
+    client.send(std::make_unique<ByeMessage>());
+    client.changeState(std::make_unique<EndState>(client));
     return;
   }
 
@@ -36,7 +38,6 @@ void OpenState::handleInput() {
 
 void OpenState::handleResponse() {
   std::unique_ptr<Message> response = client.receive();
-
   if (response == nullptr) {
     return;
   }

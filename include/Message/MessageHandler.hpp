@@ -1,11 +1,11 @@
 #pragma once
+#include "Exception/InvalidMessageException.hpp"
 #include "Message.hpp"
 #include "Message/ByeMessage.hpp"
 #include "Message/ConfirmMessage.hpp"
 #include "Message/ErrMessage.hpp"
 #include "Message/MsgMessage.hpp"
 #include "Message/ReplyMessage.hpp"
-#include <stdexcept>
 
 class MessageHandler {
 protected:
@@ -32,14 +32,9 @@ public:
       handleConfirmMessage(dynamic_cast<const ConfirmMessage &>(message));
       break;
     default:
-      handleUnknownMessage(message);
+      throw InvalidMessageException("Unsupported message type for conversion");
       break;
     }
-  }
-
-  virtual void handleUnknownMessage(const Message &message) {
-    (void)message;
-    throw std::runtime_error("Unknown message type");
   }
 
   virtual void handleConfirmMessage(const ConfirmMessage &message) {

@@ -4,6 +4,7 @@
  * @date March 2024
  */
 #include "Command/JoinCommand.hpp"
+#include "Exception/InvalidCommandException.hpp"
 #include "Message/JoinMessage.hpp"
 #include <sstream>
 
@@ -19,7 +20,7 @@ bool JoinCommand::match(const std::string &message) {
 JoinCommand::Parameters JoinCommand::parse(const std::string &message) {
   std::smatch match;
   if (!std::regex_match(message, match, PATTERN)) {
-    throw std::invalid_argument("Invalid message format");
+    throw InvalidCommandException("Invalid join command format.");
   }
 
   return Parameters{match[1]};

@@ -40,7 +40,6 @@ const std::unique_ptr<Message> UDP::receive(int socket) {
 
   std::string message = std::string(buffer, bytes_received);
 
-  // check if message format is correct
   MessageType type = determineMessageType(message);
 
   std::unique_ptr<Message> response = convertResponse(type, message);
